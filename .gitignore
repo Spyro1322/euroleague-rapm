@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.venv/
+data/landing/*.parquet
+data/warehouse/*.parquet
+data/warehouse/*.duckdb
+data/validation/*.parquet
+.ipynb_checkpoints/
+.DS_Store
+venv/
