@@ -1,10 +1,10 @@
--- Euroleague Play-Type RAPM — DuckDB schema (Week 1)
--- Canonical store is Parquet; these tables are DuckDB views/tables over the
--- landing + warehouse parquet artifacts. Run: duckdb warehouse.duckdb < sql/schema.sql
+-- Euroleague Play-Type RAPM — DuckDB schema (Week 1, reconciled Week 2)
+-- Canonical store is Parquet; landing.pbp_lineups is a VIEW over the ingested
+-- Parquet so new weekly games are reflected with no reload. Run via
+-- scripts/build_warehouse.py (executes this file, then exports pbp_poss.parquet).
 --
--- Column names mirror exactly what euroleague_api returns so ingestion is a
--- straight write with no renaming surprises. Verified against euroleague_api
--- 0.1.1 (PlayByPlay.get_game_pbp_data_lineups + BoxScoreData).
+-- Column names mirror exactly what euroleague_api returns. Verified against
+-- euroleague_api 0.1.1 (PlayByPlay.get_game_pbp_data_lineups + BoxScoreData).
 
 ------------------------------------------------------------------------------
 -- 0. schemas
@@ -30,33 +30,18 @@ CREATE TABLE IF NOT EXISTS landing.games (
 );
 
 ------------------------------------------------------------------------------
--- 2. play-by-play enriched with on-court lineups
+-- 2. play-by-play enriched with on-court lineups  — VIEW over canonical Parquet
 --    (PlayByPlay.get_game_pbp_data_lineups, validate=True)
---    Lineup_A/Lineup_B are 5-element player lists -> stored as VARCHAR[].
+--    Backed directly by data/pbp_lineups/**/*.parquet: no reload needed when the
+--    weekly refresh adds games, and column drift can't cause an INSERT mismatch.
+--    Columns (euroleague_api 0.1.1):
+--      Season, Gamecode, PERIOD, MINUTE, MARKERTIME, TRUE_NUMBEROFPLAY,
+--      NUMBEROFPLAY, CODETEAM, PLAYER_ID, PLAYER, PLAYTYPE, DORSAL, POINTS_A,
+--      POINTS_B, COMMENT, PLAYINFO, IsHomeTeam, Lineup_A[], Lineup_B[],
+--      validate_on_court_player. Order events by TRUE_NUMBEROFPLAY.
 ------------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS landing.pbp_lineups (
-    "Season"                   INTEGER NOT NULL,
-    "Gamecode"                 INTEGER NOT NULL,
-    "PERIOD"                   INTEGER,        -- 1-4 reg, 5 = OT
-    "MINUTE"                   INTEGER,
-    "MARKERTIME"               VARCHAR,        -- mm:ss on game clock
-    "TRUE_NUMBEROFPLAY"        INTEGER,        -- monotonic event order (use this)
-    "NUMBEROFPLAY"             INTEGER,        -- raw, often out of order
-    "CODETEAM"                 VARCHAR,        -- acting team code
-    "PLAYER_ID"                VARCHAR,
-    "PLAYER"                   VARCHAR,
-    "PLAYTYPE"                 VARCHAR,        -- 2FGM, AST, IN, OUT, TO, ...
-    "DORSAL"                   VARCHAR,
-    "POINTS_A"                 INTEGER,
-    "POINTS_B"                 INTEGER,
-    "COMMENT"                  VARCHAR,
-    "PLAYINFO"                 VARCHAR,
-    "IsHomeTeam"               BOOLEAN,
-    "Lineup_A"                 VARCHAR[],      -- home five at this action
-    "Lineup_B"                 VARCHAR[],      -- away five at this action
-    "validate_on_court_player" BOOLEAN,        -- data-quality flag (see ETL notes)
-    PRIMARY KEY ("Season", "Gamecode", "TRUE_NUMBEROFPLAY")
-);
+CREATE OR REPLACE VIEW landing.pbp_lineups AS
+SELECT * FROM read_parquet('data/pbp_lineups/**/*.parquet');
 
 ------------------------------------------------------------------------------
 -- 3. boxscore player stats (BoxScoreData.get_players_boxscore_stats)
@@ -92,8 +77,12 @@ CREATE TABLE IF NOT EXISTS landing.lineup_validation (
 );
 
 ------------------------------------------------------------------------------
--- 5. warehouse: possession-level stint matrix  (Week 2 — schema defined now)
---    One row per uninterrupted stint (same 10 players, same offence/defence).
+-- 5. warehouse: possession-level stint matrix
+--    NOTE (Wk2): the canonical Week-2 artifact is warehouse/stints.parquet,
+--    written by build_stint_matrix.py with home/away orientation + lineup_ok.
+--    This table's off/def orientation is a Week-3 design-matrix target; it is
+--    realigned and populated when the RAPM design is fixed. Left as a forward
+--    declaration for now (stays empty).
 ------------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS warehouse.stints (
     season            INTEGER NOT NULL,
@@ -103,7 +92,7 @@ CREATE TABLE IF NOT EXISTS warehouse.stints (
     def_team          VARCHAR,
     off_players       VARCHAR[],          -- 5 offensive player_ids
     def_players       VARCHAR[],          -- 5 defensive player_ids
-    play_type         VARCHAR,            -- 7-type tag (Week 2 tagger), NULL=unassigned
+    play_type         VARCHAR,            -- play-context tag (Week 2 tagger), NULL=unassigned
     possessions       INTEGER,
     points_scored     INTEGER,
     seconds           INTEGER,
@@ -111,10 +100,22 @@ CREATE TABLE IF NOT EXISTS warehouse.stints (
     PRIMARY KEY (season, gamecode, stint_id)
 );
 
--- convenience: only modelling-clean actions (drop flagged on-court mismatches)
+-- modelling-clean actions: correctly-attributed individual actions only.
+-- DISTINCTNESS (not len()=5) so duplicated-player fives from the sub-matcher
+-- cascade are excluded — len()=5 passes a five with a repeated name.
 CREATE OR REPLACE VIEW warehouse.pbp_clean AS
 SELECT *
 FROM landing.pbp_lineups
 WHERE "validate_on_court_player" = TRUE
-  AND len("Lineup_A") = 5
-  AND len("Lineup_B") = 5;
+  AND len(list_distinct("Lineup_A")) = 5
+  AND len(list_distinct("Lineup_B")) = 5;
+
+-- possession-complete source: keep team/structural possession-enders (blank-PLAYER
+-- team D/O/TO + BP/EP/TPOFF), drop ONLY the named mis-attributions. Reads landing.
+-- Corrupt-five composition is handled at stint granularity in build_stint_matrix
+-- (lineup_ok guard), NOT here, so the possession walker sees an unbroken stream.
+CREATE OR REPLACE VIEW warehouse.pbp_poss AS
+SELECT *
+FROM landing.pbp_lineups
+WHERE validate_on_court_player = TRUE       -- good named rows + IN/OUT subs
+   OR NULLIF(TRIM(PLAYER_ID), '') IS NULL;  -- keep blank-player team D/O/TO + BP/EP/TPOFF

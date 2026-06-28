@@ -1,0 +1,101 @@
+Season,Gamecode,NUM_ANOT,TEAM,PLAYER,ACTION,ID_ACTION,POINTS,FASTBREAK,SECOND_CHANCE,COORD_X,COORD_Y,ZONE,bucket
+2023,36,17,RED,"LAZIC, BRANKO",Missed Two Pointer,2FGA,0,0,0,-131,100,B,at_rim
+2023,36,27,VIR,"SHENGELIA, TORNIKE",Two Pointer,2FGM,2,0,0,100,250,E,mid_range
+2023,36,94,RED,"HANGA, ADAM",Missed Three Pointer,3FGA,0,0,0,-545,533,H,above_break_three
+2023,36,103,RED,"MITROVIC, LUKA",Two Pointer,2FGM,2,0,0,-81,125,B,at_rim
+2023,36,105,VIR,"SHENGELIA, TORNIKE",Three Pointer,3FGM,3,0,0,-558,495,H,above_break_three
+2023,36,158,RED,"MITROVIC, LUKA",Missed Two Pointer,2FGA,0,0,0,69,288,E,mid_range
+2023,36,191,VIR,"MICKEY, JORDAN",Missed Three Pointer,3FGA,0,0,0,608,414,I,above_break_three
+2023,36,212,VIR,"SHENGELIA, TORNIKE",Three Pointer,3FGM,3,0,0,-646,376,H,above_break_three
+2023,36,303,RED,"NAPIER, SHABAZZ",Free Throw In,FTM,1,0,0,-1,-1, ,
+2023,36,340,VIR,"CORDINIER, ISAIA",Missed Three Pointer,3FGA,0,0,0,-112,752,H,above_break_three
+2023,36,371,RED,"MITROVIC, LUKA",Two Pointer,2FGM,2,0,0,-150,87,B,at_rim
+2023,36,372,VIR,"BELINELLI, MARCO",Missed Three Pointer,3FGA,0,0,0,407,639,I,above_break_three
+2023,36,374,RED,"MITROVIC, LUKA",Two Pointer,2FGM,2,1,0,-106,75,B,transition
+2023,36,394,RED,"NAPIER, SHABAZZ",Three Pointer,3FGM,3,0,0,200,702,I,above_break_three
+2023,36,448,VIR,"LUNDBERG, IFFE",Missed Two Pointer,2FGA,0,0,0,-401,257,F,mid_range
+2023,36,495,RED,"GIEDRAITIS, ROKAS",Missed Three Pointer,3FGA,0,0,0,646,363,I,above_break_three
+2023,36,505,RED,"BOLOMBOY, JOEL",Missed Two Pointer,2FGA,0,0,0,-18,263,D,mid_range
+2023,36,531,VIR,"MICKEY, JORDAN",Two Pointer,2FGM,2,0,1,43,144,C,second_chance
+2023,36,586,VIR,"CORDINIER, ISAIA",Free Throw In,FTM,1,0,0,-1,-1, ,
+2023,36,604,VIR,"CORDINIER, ISAIA",Two Pointer,2FGM,2,0,0,12,6,A,at_rim
+2023,38,13,IST,"THOMPSON, DARIUS",Two Pointer,2FGM,2,0,1,18,282,E,second_chance
+2023,38,21,IST,"CLYBURN, WILL",Missed Three Pointer,3FGA,0,0,0,627,345,I,above_break_three
+2023,38,29,IST,"THOMPSON, DARIUS",Missed Three Pointer,3FGA,0,0,0,633,363,I,above_break_three
+2023,38,86,IST,"BEAUBOIS, RODRIGUE",Missed Three Pointer,3FGA,0,0,0,-564,470,H,above_break_three
+2023,38,88,OLY,"BRAZDEIKIS, IGNAS",Missed Two Pointer,2FGA,0,0,0,-100,37,B,at_rim
+2023,38,128,OLY,"MILUTINOV, NIKOLA",Two Pointer,2FGM,2,0,0,-12,106,B,at_rim
+2023,38,160,OLY,"WILLIAMS-GOSS, NIGEL",Missed Two Pointer,2FGA,0,0,0,194,138,C,mid_range
+2023,38,165,IST,"BRYANT, ELIJAH",Missed Three Pointer,3FGA,0,0,0,627,319,I,above_break_three
+2023,38,237,OLY,"FALL, MOUSTAPHA",Free Throw In,FTM,1,0,0,-1,-1, ,
+2023,38,276,OLY,"CANAAN, ISAIAH",Three Pointer,3FGM,3,0,0,702,-62,I,corner_three
+2023,38,305,OLY,"WALKUP, THOMAS",Missed Three Pointer,3FGA,0,0,0,589,414,I,above_break_three
+2023,38,309,OLY,"PAPANIKOLAOU, KOSTAS",Two Pointer,2FGM,2,1,0,31,106,C,transition
+2023,38,316,OLY,"CANAAN, ISAIAH",Three Pointer,3FGM,3,1,0,696,-25,I,transition
+2023,38,321,IST,"PLEISS, TIBOR",Two Pointer,2FGM,2,0,0,-495,376,F,mid_range
+2023,38,343,IST,"PLEISS, TIBOR",Missed Two Pointer,2FGA,0,0,0,-6,539,F,mid_range
+2023,38,414,OLY,"WILLIAMS-GOSS, NIGEL",Missed Three Pointer,3FGA,0,0,0,-451,558,H,above_break_three
+2023,38,420,OLY,"PETERS, ALEC",Missed Two Pointer,2FGA,0,0,0,-363,75,D,mid_range
+2023,38,444,IST,"CLYBURN, WILL",Missed Two Pointer,2FGA,0,0,0,125,138,C,at_rim
+2023,38,494,IST,"YILMAZ, ERKAN",Two Pointer,2FGM,2,0,0,-37,112,B,at_rim
+2023,38,518,OLY,"BRAZDEIKIS, IGNAS",Missed Three Pointer,3FGA,0,0,0,583,388,I,above_break_three
+2023,111,15,PAR,"LEDAY, ZACH",Missed Two Pointer,2FGA,0,0,0,31,457,G,mid_range
+2023,111,27,MIL,"SHIELDS, SHAVON",Missed Three Pointer,3FGA,0,0,0,-439,558,H,above_break_three
+2023,111,88,PAR,"CABOCLO, BRUNO",Free Throw In,FTM,1,0,0,-1,-1, ,
+2023,111,90,MIL,"SHIELDS, SHAVON",Three Pointer,3FGM,3,0,0,-414,564,H,above_break_three
+2023,111,143,PAR,"SMAILAGIC, ALEN",Two Pointer,2FGM,2,0,0,-6,12,A,at_rim
+2023,111,162,PAR,"NUNNALLY, JAMES",Missed Three Pointer,3FGA,0,0,0,56,702,I,above_break_three
+2023,111,184,PAR,"SMAILAGIC, ALEN",Two Pointer,2FGM,2,0,0,-6,6,A,at_rim
+2023,111,270,MIL,"SHIELDS, SHAVON",Missed Two Pointer,2FGA,0,0,0,-332,457,F,mid_range
+2023,111,311,PAR,"SMAILAGIC, ALEN",Free Throw In,FTM,1,0,0,-1,-1, ,
+2023,111,343,PAR,"DOZIER JR, PERRY",Missed Three Pointer,3FGA,0,0,0,677,56,I,corner_three
+2023,111,345,MIL,"MELLI, NICOLO",Three Pointer,3FGM,3,0,0,-345,627,H,above_break_three
+2023,111,354,MIL,"FLACCADORI, DIEGO",Free Throw In,FTM,1,0,0,-1,-1, ,
+2023,111,362,MIL,"SHIELDS, SHAVON",Free Throw In,FTM,1,0,0,-1,-1, ,
+2023,111,363,MIL,"SHIELDS, SHAVON",Free Throw In,FTM,1,0,0,-1,-1, ,
+2023,111,404,PAR,"LEDAY, ZACH",Free Throw In,FTM,1,0,0,-1,-1, ,
+2023,111,436,MIL,"FLACCADORI, DIEGO",Missed Three Pointer,3FGA,0,0,0,-25,708,H,above_break_three
+2023,111,442,MIL,"HALL, DEVON",Missed Three Pointer,3FGA,0,0,0,-288,1242,J,above_break_three
+2023,111,482,PAR,"NUNNALLY, JAMES",Missed Three Pointer,3FGA,0,0,0,131,702,I,above_break_three
+2023,111,520,MIL,"LO, MAODO",Free Throw In,FTM,1,0,0,-1,-1, ,
+2023,111,537,MIL,"MELLI, NICOLO",Missed Two Pointer,2FGA,0,0,0,-125,69,B,at_rim
+2023,224,12,VIR,"BELINELLI, MARCO",Two Pointer,2FGM,2,0,0,-125,56,B,at_rim
+2023,224,96,VIR,"LUNDBERG, IFFE",Two Pointer,2FGM,2,0,0,-125,56,B,at_rim
+2023,224,98,PAR,"LEDAY, ZACH",Missed Two Pointer,2FGA,0,0,0,351,94,E,mid_range
+2023,224,100,VIR,"BELINELLI, MARCO",Three Pointer,3FGM,3,0,0,-376,664,H,above_break_three
+2023,224,149,PAR,"DOZIER JR, PERRY",Two Pointer,2FGM,2,0,0,125,62,C,at_rim
+2023,224,187,VIR,"SHENGELIA, TORNIKE",Free Throw In,FTM,1,0,0,-1,-1, ,
+2023,224,206,VIR,"HACKETT, DANIEL",Missed Three Pointer,3FGA,0,0,0,-633,382,H,above_break_three
+2023,224,287,PAR,"AVRAMOVIC, ALEKSA",Free Throw In,FTM,1,0,0,-1,-1, ,
+2023,224,327,PAR,"LEDAY, ZACH",Missed Two Pointer,2FGA,0,0,0,319,363,G,mid_range
+2023,224,360,PAR,"SMITH, JALEEN",Two Pointer,2FGM,2,0,1,-125,43,B,second_chance
+2023,224,362,VIR,"HACKETT, DANIEL",Missed Three Pointer,3FGA,0,0,0,-69,746,H,above_break_three
+2023,224,364,PAR,"DOZIER JR, PERRY",Missed Three Pointer,3FGA,0,0,0,382,621,I,above_break_three
+2023,224,377,PAR,"DOZIER JR, PERRY",Two Pointer,2FGM,2,0,0,-62,175,B,at_rim
+2023,224,378,VIR,"LUNDBERG, IFFE",Two Pointer,2FGM,2,0,0,-138,56,B,at_rim
+2023,224,416,VIR,"PAJOLA, ALESSANDRO",Missed Three Pointer,3FGA,0,0,0,37,740,I,above_break_three
+2023,224,459,PAR,"AVRAMOVIC, ALEKSA",Two Pointer,2FGM,2,1,0,94,69,C,transition
+2023,224,470,VIR,"LUNDBERG, IFFE",Free Throw In,FTM,1,0,1,-1,-1, ,
+2023,224,493,VIR,"DUNSTON, BRYANT",Free Throw In,FTM,1,0,1,-1,-1, ,
+2023,224,535,PAR,"SMAILAGIC, ALEN",Free Throw In,FTM,1,0,0,-1,-1, ,
+2023,224,549,PAR,"PUNTER, KEVIN",Three Pointer,3FGM,3,0,0,175,740,I,above_break_three
+2023,278,28,MUN,"LUCIC, VLADIMIR",Missed Three Pointer,3FGA,0,0,0,-696,37,H,corner_three
+2023,278,35,MUN,"EDWARDS, CARSEN",Missed Two Pointer,2FGA,0,0,0,-163,131,B,mid_range
+2023,278,66,MUN,"IBAKA, SERGE",Two Pointer,2FGM,2,0,0,-225,6,B,mid_range
+2023,278,71,TEL,"BALDWIN IV, WADE",Missed Two Pointer,2FGA,0,0,0,125,94,C,at_rim
+2023,278,76,TEL,"CLEVELAND, ANTONIUS",Three Pointer,3FGM,3,0,0,426,627,I,above_break_three
+2023,278,127,TEL,"RIVERO, JASIEL",Two Pointer,2FGM,2,0,0,-194,338,D,mid_range
+2023,278,161,MUN,"EDWARDS, CARSEN",Three Pointer,3FGM,3,0,0,-602,426,H,above_break_three
+2023,278,167,MUN,"EDWARDS, CARSEN",Missed Two Pointer,2FGA,0,0,0,-112,6,B,at_rim
+2023,278,253,MUN,"WEILER-BABB, NICK",Three Pointer,3FGM,3,0,0,106,740,I,above_break_three
+2023,278,301,TEL,"BROWN, LORENZO",Free Throw In,FTM,1,0,0,-1,-1, ,
+2023,278,330,TEL,"RIVERO, JASIEL",Two Pointer,2FGM,2,0,0,-313,407,F,mid_range
+2023,278,339,TEL,"BALDWIN IV, WADE",Missed Three Pointer,3FGA,0,0,0,451,602,I,above_break_three
+2023,278,345,MUN,"BOLMARO, LEANDRO",Three Pointer,3FGM,3,0,0,363,608,I,above_break_three
+2023,278,392,MUN,"EDWARDS, CARSEN",Missed Three Pointer,3FGA,0,0,0,-225,677,H,above_break_three
+2023,278,394,MUN,"HARRIS, ELIAS",Two Pointer,2FGM,2,0,1,338,69,E,second_chance
+2023,278,444,MUN,"HARRIS, ELIAS",Two Pointer,2FGM,2,0,0,-144,69,B,at_rim
+2023,278,447,MUN,"FRANCISCO, SYLVAIN",Missed Two Pointer,2FGA,0,0,0,-144,25,B,at_rim
+2023,278,480,TEL,"CLEVELAND, ANTONIUS",Missed Two Pointer,2FGA,0,0,0,-181,106,B,mid_range
+2023,278,526,MUN,"BOLMARO, LEANDRO",Two Pointer,2FGM,2,0,0,-25,445,F,mid_range
+2023,278,549,TEL,"BALDWIN IV, WADE",Free Throw In,FTM,1,0,0,-1,-1, ,
