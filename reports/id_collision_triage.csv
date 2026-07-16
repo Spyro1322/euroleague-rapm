@@ -1,0 +1,21 @@
+name,player_id,n_rows,season_min,season_max,seasons,teams,id_norm,verdict,reason
+"AGUILAR, PABLO",PKSF,166,2007,2014,"2007,2014","MAD,PAM",KSF,REVIEW_OVERLAP_SAMETEAM,"shares season(s) [2007] AND team — likely same player, dup registration"
+"AGUILAR, PABLO",MAD991,4,2007,2007,2007,MAD,MAD991,REVIEW_OVERLAP_SAMETEAM,"shares season(s) [2007] AND team — likely same player, dup registration"
+"BOOKER, MELVIN",PAVD,286,2007,2007,2007,MIL,AVD,MERGE_FORMAT,ids identical once P-prefix/zeros normalised
+"BOOKER, MELVIN",AVD,33,2007,2007,2007,MIL,AVD,MERGE_FORMAT,ids identical once P-prefix/zeros normalised
+"MILOSEVIC, STRAHINJA",PTHY,572,2007,2009,"2007,2008,2009",PAR,THY,REVIEW_OVERLAP_SAMETEAM,"shares season(s) [2008] AND team — likely same player, dup registration"
+"MILOSEVIC, STRAHINJA",PTGY,31,2008,2008,2008,PAR,TGY,REVIEW_OVERLAP_SAMETEAM,"shares season(s) [2008] AND team — likely same player, dup registration"
+"MULALIC, MIRKO",P000437,18,2007,2007,2007,LJU,437,REVIEW_OVERLAP_SAMETEAM,"shares season(s) [2007] AND team — likely same player, dup registration"
+"MULALIC, MIRKO",LJU1,9,2007,2007,2007,LJU,LJU1,REVIEW_OVERLAP_SAMETEAM,"shares season(s) [2007] AND team — likely same player, dup registration"
+"NAVAJAS, ALEJANDRO",PLAC,1,2007,2007,2007,MAL,LAC,REVIEW_OVERLAP_SAMETEAM,"shares season(s) [2007] AND team — likely same player, dup registration"
+"NAVAJAS, ALEJANDRO",MAL1,1,2007,2007,2007,MAL,MAL1,REVIEW_OVERLAP_SAMETEAM,"shares season(s) [2007] AND team — likely same player, dup registration"
+"ROCKMANN, MANUEL",P001720,3,2012,2012,2012,BAM,1720,MERGE_FORMAT,ids identical once P-prefix/zeros normalised
+"ROCKMANN, MANUEL",001720,1,2012,2012,2012,BAM,1720,MERGE_FORMAT,ids identical once P-prefix/zeros normalised
+"SHAKUR, MUSTAFA",P000668,695,2007,2014,"2007,2008,2014","BAS,KLA,SOP",668,REVIEW_OVERLAP_SAMETEAM,"shares season(s) [2007] AND team — likely same player, dup registration"
+"SHAKUR, MUSTAFA",1,21,2007,2007,2007,SOP,1,REVIEW_OVERLAP_SAMETEAM,"shares season(s) [2007] AND team — likely same player, dup registration"
+"SIMONOVIC, MARKO",PLRU,1993,2013,2021,"2013,2015,2016,2020,2021",RED,LRU,MERGE_DISJOINT,no shared season between ids (ID migration)
+"SIMONOVIC, MARKO",P012711,132,2023,2023,2023,RED,12711,MERGE_DISJOINT,no shared season between ids (ID migration)
+"UDOM, MATTIA",P001479,11,2011,2013,"2011,2013",SIE,1479,REVIEW_OVERLAP_SAMETEAM,"shares season(s) [2013] AND team — likely same player, dup registration"
+"UDOM, MATTIA",PSIE374368,1,2013,2013,2013,SIE,SIE374368,REVIEW_OVERLAP_SAMETEAM,"shares season(s) [2013] AND team — likely same player, dup registration"
+"YURTSEVEN, OMER",P005353,1177,2014,2025,"2014,2015,2024,2025","PAN,ULK",5353,REVIEW_OVERLAP_SAMETEAM,"shares season(s) [2015] AND team — likely same player, dup registration"
+"YURTSEVEN, OMER",P005983,6,2015,2015,2015,ULK,5983,REVIEW_OVERLAP_SAMETEAM,"shares season(s) [2015] AND team — likely same player, dup registration"

@@ -1,0 +1,36 @@
+# Curated PLAYER_ID merges — hand-verified, Week 3.
+#
+# Source: reports/id_collision_triage.csv (10 colliding name-strings).
+# Every row here was checked individually. This file is the RECORD OF DECISION;
+# build_player_id_map.py applies it. Do not auto-generate it.
+#
+# verdict codes:
+#   FORMAT     ids identical once the 'P' prefix / zero-padding is normalised
+#   TEAM_LEGACY  legacy team-scoped id (TEAMcode+serial) vs canonical id
+#   TYPO       one-character corruption of the canonical id
+#   JUNK       placeholder/garbage id
+#   DUP_REG    duplicate registration under the modern scheme
+#
+# NOT MERGED — SIMONOVIC, MARKO (PLRU vs P012711). These are TWO DIFFERENT
+# PLAYERS, verified against EuroLeague official profiles:
+#   PLRU     = Marko Simonovic, b. 30 May 1986, Serbian, 2.03m SF.
+#              EuroLeague profile code 'lru'. Crvena Zvezda 2013-14..2021-22,
+#              retired 2022 (now a coach).
+#   P012711  = Marko Simonovic, b. 15 Oct 1999, Montenegrin, 2.13m C.
+#              EuroLeague profile code '012711'. Crvena Zvezda 2023-24 only,
+#              then Besiktas (Jan 2024).
+# Their season footprints are disjoint ONLY because one retired as the other
+# arrived at the same club. The triage heuristic proposed MERGE_DISJOINT here —
+# that verdict is WRONG and is overridden by this file. Merging them would fuse
+# two players into a single ridge column.
+#
+name,from_id,to_id,verdict,note
+"AGUILAR, PABLO",MAD991,PKSF,TEAM_LEGACY,"Real Madrid team-scoped id, 4 rows in 2007 vs 166 rows 2007-2014 (MAD,PAM)"
+"BOOKER, MELVIN",AVD,PAVD,FORMAT,"missing leading P; both 2007 MIL"
+"MILOSEVIC, STRAHINJA",PTGY,PTHY,TYPO,"PTGY vs PTHY one-char; both PAR, 31 vs 572 rows"
+"MULALIC, MIRKO",LJU1,P000437,TEAM_LEGACY,"Ljubljana team-scoped id; both 2007 LJU"
+"NAVAJAS, ALEJANDRO",MAL1,PLAC,TEAM_LEGACY,"Malaga team-scoped id; both 2007 MAL, 1 row each"
+"ROCKMANN, MANUEL",001720,P001720,FORMAT,"missing leading P; both 2012 BAM"
+"SHAKUR, MUSTAFA",1,P000668,JUNK,"id '1' placeholder, 21 rows 2007 SOP vs 695 rows 2007-2014"
+"UDOM, MATTIA",PSIE374368,P001479,TEAM_LEGACY,"Siena team-scoped id, 1 row 2013 vs 11 rows 2011-2013 SIE"
+"YURTSEVEN, OMER",P005983,P005353,DUP_REG,"duplicate registration, 6 rows 2015 ULK vs 1177 rows 2014-2025"
