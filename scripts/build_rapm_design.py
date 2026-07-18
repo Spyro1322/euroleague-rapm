@@ -67,8 +67,8 @@ LINEUP_OK_COL = "lineup_ok"           # Boolean
 # become a per-100 ratio, which is why it lives here, not in the fit step.
 # Point these at columns your possession walker emits (expected points scored
 # BY that team on the stint). Leave as None to fit on raw points.
-HOME_XPTS_COL = None                   # e.g. "home_xpoints"
-AWAY_XPTS_COL = None                   # e.g. "away_xpoints"
+HOME_XPTS_COL = "home_xpts"                   # e.g. "home_xpoints"
+AWAY_XPTS_COL = "away_xpts"                   # e.g. "away_xpoints"
 
 OUT_NPZ = Path("warehouse/rapm_design.npz")          # overridden by --prefix
 OUT_PLAYERS = Path("warehouse/rapm_players.parquet")  # overridden by --prefix

@@ -3,8 +3,8 @@
 _Last updated: end of Week 3_  ·  _Submission target: start of August 2026_
 
 ## Current phase
-- Week 3 closing → Week 4 next (Streamlit Tab 1 + GitHub Actions refresh).
-- **BLOCKING DECISION before Week 4 starts:** pooled-career vs 5-season rolling window (see Open issues). Bootstrap and Tab 1 both depend on it.
+- Week 3 **fully closed** (luck adjustment included) → Week 4 next (Streamlit Tab 1 + GitHub Actions refresh).
+- **FIRST WEEK-4 DECISION (blocks bootstrap + Tab 1):** pooled-career vs 5-season rolling window. See Open issues.
 
 ## Done
 - Thesis proposal (5 sections, approved by supervisor).
@@ -18,14 +18,15 @@ _Last updated: end of Week 3_  ·  _Submission target: start of August 2026_
   - **Shot feed:** `scripts/ingest_shots.py` — 2023 ingested (50,159 shots). Full range still TO PULL (Week 6).
   - **Play-context tagger:** `scripts/play_context.py` (6 outcome-independent buckets), `scripts/tag_shots.py` (join-match 99.95%). 2023: 41,331 FGAs.
   - Appendix figure: `fig_play_context_decision_tree.svg`.
-- **Week 3 — player ID map + baseline ridge RAPM + Olivo replication (CLOSED bar luck adjustment):**
+- **Week 3 — player ID map + baseline ridge RAPM + Olivo replication + luck adjustment (CLOSED):**
   - **Boxscore ingest:** `scripts/ingest_boxscore.py` — REWRITTEN (see bug #4). Per-game shards under `landing/boxscore_players/season=YYYY/game_NNNNN.parquet`, own 429 backoff, per-season `_SUCCESS` / `_MISSING.csv` completeness gate. All seasons complete except 2018 gc21 — **the same game missing from the PBP feed, independently detected by two ingests.**
   - **ID map (the blocker):** `scripts/build_player_id_map.py` + `config/id_merges.csv` + `scripts/triage_id_collisions.py`.
     - `warehouse/player_id_map.parquet` — 6,413 (name, season) rows → 2,374 distinct players.
     - `warehouse/stints_ids.parquet` — 279,174 stints, lineups as PLAYER_ID lists. No rows lost.
     - `warehouse/tagged_shots_ids.parquet` — shooter + `off_players`/`def_players` remapped. 35/41,311 shooters unmapped (0.08%) — Week 6 item, off the O2 path.
-  - **Design matrix:** `scripts/build_rapm_design.py` — 296,683 observations, 2,183 players → 4,366 columns, X strictly 0/1, mean y = 105.89/100, 751,146 possessions, 5,039 CV groups.
-  - **Baseline fit:** `scripts/fit_ridge_rapm.py` — α=3162.3 (interior, U-shaped CV curve), 1,478 players ≥500 poss. RAPM mean 0.09, sd 1.60, min −4.84, max +8.17. `warehouse/rapm_baseline.{parquet,csv}`.
+  - **Design matrix:** `scripts/build_rapm_design.py` — 296,683 observations, 2,183 players → 4,366 columns, X strictly 0/1, 751,146 possessions, 5,039 CV groups. Luck-adjusted target: mean y = 105.51/100 (raw was 105.89).
+  - **Baseline fit (luck-adjusted):** `scripts/fit_ridge_rapm.py` — α=1995.3 (interior, U-shaped CV; dropped from 3162 raw because the adjusted target is less noisy). 1,478 players ≥500 poss. RAPM mean 0.10, sd 1.62, min −5.26, max +7.65. `warehouse/rapm_baseline.{parquet,csv}`.
+  - **Luck adjustment (DONE):** per-season league 3P% via `scripts/build_league_averages.py`; 3-pt makes replaced by expected (3PA × season league 3P%), 2s and FTs left realised. Walker emits `home_xpts`/`away_xpts`; design `HOME_XPTS_COL`/`AWAY_XPTS_COL` wired on. Validated: realised 796,713 pts vs expected 796,714 (diff +0.000%). Effect is subtle and correct — rim-runners (Tavares ORAPM 3.60→2.36) shed teammates' 3-pt variance, defence signal sharpens (Tavares DRAPM 4.57→5.29); perimeter scorers whose offence isn't 3-variance-driven (Thompson ORAPM 4.13) survive adjustment.
   - **Olivo replication (PASSED):** like-for-like refit on his window via `--seasons 2018:2022 --prefix rapm_olivo --min-games 50`. 84,053 stints, 657 players, 1,466 games, 240 players after ≥50-games filter.
 
 ## Olivo (2024) replication — result
@@ -45,7 +46,7 @@ His protocol: ridge, 5-fold CV, **2018-19 → 2022-23 pooled**, **≥50 games**,
 **Interpretation (for Ch4):** ordering replicates; agreement is near-exact for prior-dominated (low-possession) players and diverges with possession count. λ values are **NOT comparable** — glmnet minimises `(1/2n)·RSS + (λ/2)‖β‖²` with standardised predictors, sklearn minimises `RSS + α‖β‖²` on raw 0/1 columns. Olivo also adds game-context weights (playoff ×2, clutch ×2, garbage ×0.5) we do not. Residual difference concentrates in high-possession players, consistent with a weaker effective penalty in our fit. Do not claim a clean numeric match; claim rank replication + a diagnosed scale difference.
 
 ## In progress
-- (none open) — Week 3 closed bar luck adjustment.
+- (none open) — Week 3 fully closed.
 
 ## Key decisions made
 - Season range: full 2007-08 → 2025-26, no truncation (validated).
@@ -76,10 +77,8 @@ His protocol: ridge, 5-fold CV, **2018-19 → 2022-23 pooled**, **≥50 games**,
 5. **NEW (data, not library) — `Gamecode` is season-scoped.** Only **402 distinct values across 5,039 games**. Any group/join/CV keyed on Gamecode alone silently merges ~19 unrelated games. Use (Season, Gamecode).
 
 ## Corrections to earlier claims
-- **Week 2 STATUS said 27 duplicated-five games were "excluded via `lineup_ok` guard". They were not.** `lineup_ok` is `true` for all 279,174 rows of `stints.parquet` — the flag never propagated. 33 stints across **2 games** still carried duplicated fives. `build_stint_matrix.py` evidently excluded most of the 27, but the flag records nothing and 2 games leaked.
-  - Consequence had it gone unnoticed: `scipy.coo_matrix` **sums** duplicate (row, col) pairs, so a repeated player becomes a **2.0** in the design matrix — counted as two men on the floor. Silent, not an error.
-  - Fixed: distinctness is **re-derived** in `build_rapm_design.py` (`ENFORCE_DISTINCT_FIVES`), plus a hard assert that X is strictly 0/1. Post-fix nnz shortfall = 0.
-  - TODO: either fix `build_stint_matrix.py` to populate `lineup_ok` properly, or delete the column. Right now it is decorative and anything trusting it inherits the bug.
+- **Week 2 STATUS said 27 duplicated-five games were "excluded via `lineup_ok` guard".** Investigated in Week 3: the flag never propagated to the on-disk `stints.parquet` (all rows `true`, yet 33 stints across 2 games still carried duplicated fives). **RESOLVED:** `stints.parquet` was rebuilt end-of-Week-3 from `warehouse/pbp_poss.parquet` with the current `build_stint_matrix.py` (drop_corrupt=True fired), so the artifact now matches the code and `lineup_ok` is meaningful. The design build also re-derives distinctness (`ENFORCE_DISTINCT_FIVES`) with a hard 0/1 assert as belt-and-braces. `scipy.coo_matrix` would otherwise SUM a duplicated player into a 2.0 (two men on the floor) — silent, not an error.
+  - Provenance note: the rebuilt `stints.parquet` still shows 33 dup-five stints pre-filter at the design stage because the design guard runs on `stints_ids.parquet` before the drop; net effect on the model is zero (dropped). If revisiting, decide whether `build_stint_matrix.py`'s drop should happen before or after the ID remap.
 
 ## Open issues / watch
 - **DECIDE BEFORE WEEK 4 — pooled-career vs rolling window.** Current design gives each player ONE coefficient across all 19 seasons (Mirotic 2008→2025 = one number spanning a 17-y/o prospect and a 34-y/o star). Two consequences:
@@ -87,7 +86,8 @@ His protocol: ridge, 5-fold CV, **2018-19 → 2022-23 pooled**, **≥50 games**,
   2. **O5's weekly refresh implies current-form ratings**, not career averages.
   - Olivo's precedent is a **5-season pooled window**, not a career pool — he argues RAPM needs multiple seasons but does not pool a whole career.
   - Options: (a) 5-season rolling windows (cheap — `--seasons` flag already exists; citable; fixes the leak); (b) player-season columns with shrinkage toward a career mean (~12.8k columns; more principled, more work, risks O3/O4 time).
-- **Luck adjustment NOT DONE.** `stints.parquet` has no expected-points columns, so `build_rapm_design.py` fits on raw points (`HOME_XPTS_COL`/`AWAY_XPTS_COL` = None). Either revisit the Week-2 possession walker to emit expected points (3P makes → 3·3PA·leagueAvg3P%), or state in Ch4 that the baseline is unadjusted and why. **This is the one Week-3 scope item still open.**
+- **Luck adjustment DONE** (see Week 3 record). Baseline now fits expected points. `stints.parquet` carries `home_xpts`/`away_xpts`, `home_3pa`/`away_3pa`, `home_non3_pts`/`away_non3_pts`, `lg_3p_pct`. `warehouse/league_averages.parquet` is the per-season 3P% source.
+- **Display filter for Ch4 leaderboard.** Model uses `--min-poss 500`, but the presented top-15 lets low-sample players climb (Goree 2,035 poss / single 2007 season at #11; Ilyasova 3,719; Pekovic 5,366). For the *presented* table use `--min-poss 3000`; keep 500 for the model itself. Filter for display, not for fitting.
 - **λ is weakly identified.** CV picked α=3162.3 for BOTH the 297k-obs and 87k-obs fits — the same grid point on a third of the data. The curve is flat near the optimum (5110.53 @ 3162 vs 5110.98 @ 1995 = 0.01%) and the 16-point grid is coarse (~0.2 dex). "CV-selected λ" is doing less work than the phrase implies. Say so in Ch4.
 - **Bootstrap not run.** Run ONCE, after the design decision, before Tab 1 (Tab 1 + Ch4 both need RAPM_lo/RAPM_hi).
 - 35/41,311 unmapped shooters (0.08%) in tagged_shots — Week 6 / O3.
@@ -102,15 +102,25 @@ His protocol: ridge, 5-fold CV, **2018-19 → 2022-23 pooled**, **≥50 games**,
 - Still flagged from Wk2: lasso-multinomial authorship, Win Score/Berri.
 
 ## Next actions (Week 4)
-1. **Decide pooled vs rolling window** (blocks 2 and 3).
-2. **Run bootstrap ONCE** on the committed design → RAPM_lo/RAPM_hi.
-3. Streamlit Tab 1 (leaderboard, O/D split, CIs) + GitHub Actions weekly refresh.
+1. **Decide pooled-career vs 5-season rolling window** (blocks 2 and 3). Current fits are career-pooled — each player one coefficient across all seasons (Calathes 2009→2025 = one number). Two consequences: (a) Ch7's held-out 2025-26 leaks (last_season=2025 is in training); (b) O5's weekly refresh implies current-form, not career, ratings. Olivo's precedent is a 5-season pooled window. `--seasons` flag already supports it. Likely two fits: `--seasons 2020:2024` (hold-out-safe evaluation fit) and `--seasons 2021:2025` (current/dashboard fit); keep the pooled all-time fit as a historical leaderboard.
+2. **Run bootstrap ONCE** on the committed dashboard design → RAPM_lo/RAPM_hi (needed by Tab 1 + Ch4).
+3. Streamlit Tab 1 (leaderboard, O/D split, CIs; `--min-poss 3000` for display) + GitHub Actions weekly refresh.
 4. Ch2 Olivo stub → real text; Ch4 baseline draft (writing chat).
 5. Background job anytime: `ingest_shots.py --seasons 2007-2025` (Week 6 / O3) — **run solo**, the API rate-limits (429) under concurrent pulls.
+
+## Scripts added/changed in Week 3
+- `scripts/ingest_boxscore.py` (rewritten — per-game shards, 429 backoff, completeness gate)
+- `scripts/build_player_id_map.py` (v2 — (name,season) key, merge-aware, hard invariant)
+- `scripts/triage_id_collisions.py` (new — season/team collision triage)
+- `config/id_merges.csv` (new — curated record of decision, 9 merges)
+- `scripts/build_rapm_design.py` (real schema, distinct-five guard, (Season,Gamecode) key, --seasons/--prefix, luck-adjust hook)
+- `scripts/fit_ridge_rapm.py` (names+season spans, --prefix/--min-games/--out, top-15/bottom-5 print)
+- `scripts/build_league_averages.py` (new — per-season league 3P%)
+- `scripts/build_stint_matrix.py` (patched — emits 3pa / non3_pts / xpts per team)
 
 ## Links
 - GitHub repo: https://github.com/Spyro1322/euroleague-rapm
 - HF Space URL: (pending Wk5)
 - Olivo thesis: https://amslaurea.unibo.it/id/eprint/30803/1/olivo_thesis.pdf
-- Current artifacts: warehouse/{stints_ids, tagged_shots_ids, player_id_map, rapm_design, rapm_players, rapm_baseline, rapm_olivo_baseline}
+- Current artifacts: warehouse/{stints, stints_ids, tagged_shots_ids, player_id_map, league_averages, rapm_design, rapm_players, rapm_baseline, rapm_olivo_baseline}
 - Decision records: config/id_merges.csv, reports/id_collision_triage.csv

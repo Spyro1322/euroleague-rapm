@@ -49,6 +49,10 @@ END_PER   = {"EP"}
 SUB_IN, SUB_OUT = "IN", "OUT"
 NEUTRAL   = {"BP", "EP", "TPOFF", "JB", "TOUT", "TOUT_TV", "IN", "OUT", "C", "B"}
 PTS = {"2FGM": 2, "3FGM": 3, "LAYUPMD": 2, "DUNK": 2, "FTM": 1}
+# Validated shares: 3PA reconstruction = 3FGM+3FGA+3FGAB (league 3P% 36.17%).
+ATT_3   = {"3FGM", "3FGA", "3FGAB"}                       # all 3-pt attempts
+ATT_2   = {"2FGM", "2FGA", "2FGAB", "DUNK", "LAYUPMD", "LAYUPATT"}  # all 2-pt attempts
+# (ATT_2 kept for QC/interpretability; luck adj only regresses 3s.)
 
 
 def _is_trip_end(playtypes: list[str], i: int) -> bool:
@@ -150,7 +154,15 @@ def _aggregate_stints(walked: pl.DataFrame) -> pl.DataFrame:
         pts = s["PLAYTYPE"].replace_strict(PTS, default=0, return_dtype=pl.Int32)
         home_pts = int((pts * (s["CODETEAM"] == htm)).sum())
         away_pts = int((pts * (s["CODETEAM"] == atm)).sum())
+        is_3pa = s["PLAYTYPE"].is_in(list(ATT_3))
+        home_3pa = int((is_3pa & (s["CODETEAM"] == htm)).sum())
+        away_3pa = int((is_3pa & (s["CODETEAM"] == atm)).sum())
 
+        # realised points that are NOT 3-pt makes (2s + FTs) stay as-is;
+        # only 3-pt production is replaced by its expectation downstream.
+        pts3 = s["PLAYTYPE"].replace_strict({"3FGM": 3}, default=0, return_dtype=pl.Int32)
+        home_non3_pts = home_pts - int((pts3 * (s["CODETEAM"] == htm)).sum())
+        away_non3_pts = away_pts - int((pts3 * (s["CODETEAM"] == atm)).sum())        
         ends = s.filter(pl.col("poss_end"))
         home_poss = int((ends["poss_off"] == htm).sum())
         away_poss = int((ends["poss_off"] == atm).sum())
@@ -160,6 +172,8 @@ def _aggregate_stints(walked: pl.DataFrame) -> pl.DataFrame:
             "home_team": htm, "away_team": atm,
             "home_players": hp, "away_players": ap,
             "home_pts": home_pts, "away_pts": away_pts,
+            "home_3pa": home_3pa, "away_3pa": away_3pa,
+            "home_non3_pts": home_non3_pts, "away_non3_pts": away_non3_pts,
             "home_poss": home_poss, "away_poss": away_poss,
             "poss": (home_poss + away_poss) / 2,
             "margin": home_pts - away_pts,
@@ -175,6 +189,32 @@ def _aggregate_stints(walked: pl.DataFrame) -> pl.DataFrame:
               + (" …" if len(skipped_games) > 10 else ""))
     return pl.DataFrame(rows)
 
+def _add_expected_points(stints: pl.DataFrame,
+                         lg_path: str = "warehouse/league_averages.parquet"
+                         ) -> pl.DataFrame:
+    """Add home_xpts / away_xpts: 3-pt makes replaced by expected (attempts ×
+    per-season league 3P%). No-op with a warning if league averages are absent."""
+    import os
+    if not os.path.exists(lg_path):
+        print(f"[luck] {lg_path} missing — run build_league_averages.py first; "
+              f"xpts NOT added")
+        return stints
+    lg = pl.read_parquet(lg_path).select("Season", "lg_3p_pct")
+    out = stints.join(lg, on="Season", how="left")
+    if out["lg_3p_pct"].null_count():
+        print("[luck] WARNING: some seasons missing a league 3P% — those xpts null")
+    out = out.with_columns(
+        (pl.col("home_non3_pts") + 3 * pl.col("home_3pa") * pl.col("lg_3p_pct"))
+            .alias("home_xpts"),
+        (pl.col("away_non3_pts") + 3 * pl.col("away_3pa") * pl.col("lg_3p_pct"))
+            .alias("away_xpts"),
+    )
+    # sanity: total expected points should ~= total realised (luck nets to ~0)
+    r = out["home_pts"].sum() + out["away_pts"].sum()
+    x = out["home_xpts"].sum() + out["away_xpts"].sum()
+    print(f"[luck] realised pts={r:,.0f}  expected pts={x:,.0f}  "
+          f"diff={100*(x-r)/r:+.3f}%  (expect within ~0.1%)")
+    return out
 
 def build_stint_matrix(pbp: pl.DataFrame, drop_corrupt: bool = True) -> pl.DataFrame:
     """Full pipeline: validated lineup PBP (any #games) → stint table.
@@ -196,6 +236,7 @@ def build_stint_matrix(pbp: pl.DataFrame, drop_corrupt: bool = True) -> pl.DataF
               f"game(s) — duplicated-player lineups (sub-matcher cascade):")
         print(bad.group_by(["Season", "Gamecode"]).agg(pl.len().alias("stints"))
               .sort("stints", descending=True).head(10))
+    stints = _add_expected_points(stints)
     return stints.filter(pl.col("lineup_ok")) if drop_corrupt else stints
 
 
