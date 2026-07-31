@@ -1,0 +1,228 @@
+
+========================================================================
+A. TAGGED SHOT COVERAGE  (is the tagger run full-range or one season?)
+========================================================================
+  total rows: 41,311
+  distinct seasons: 1
+shape: (1, 3)
+┌────────┬───────┬───────┐
+│ Season ┆ shots ┆ games │
+│ ---    ┆ ---   ┆ ---   │
+│ i64    ┆ u32   ┆ u32   │
+╞════════╪═══════╪═══════╡
+│ 2023   ┆ 41311 ┆ 331   │
+└────────┴───────┴───────┘
+
+  season list: [2023]
+
+  >>> VERDICT: tagger has run on 1 season(s), NOT 19.
+      The full-range TAGGING step is outstanding. Locate the raw shot
+      shards and re-run the tagger before the stacked design.
+
+  Searching for raw shot shards outside warehouse/ ...
+    data: 10081 parquet file(s)
+    data/shots: 5039 parquet file(s)
+    venv/lib/python3.12/site-packages/altair/datasets: 1 parquet file(s)
+    venv/lib/python3.12/site-packages/altair/datasets/_metadata: 1 parquet file(s)
+    venv/lib/python3.12/site-packages/pyarrow/tests/data: 4 parquet file(s)
+
+========================================================================
+B. SHOTS -> STINTS BRIDGE
+========================================================================
+  pbp_poss.parquet schema:
+    Season                       Int64
+    Gamecode                     Int64
+    TYPE                         Int64
+    NUMBEROFPLAY                 Int64
+    CODETEAM                     String
+    PLAYER_ID                    String
+    PLAYTYPE                     String
+    PLAYER                       String
+    TEAM                         String
+    DORSAL                       String
+    MINUTE                       Int64
+    MARKERTIME                   String
+    POINTS_A                     Float64
+    POINTS_B                     Float64
+    COMMENT                      String
+    PLAYINFO                     String
+    PERIOD                       Int64
+    IsHomeTeam                   Int32
+    TRUE_NUMBEROFPLAY            Int64
+    Lineup_A                     List(String)
+    Lineup_B                     List(String)
+    validate_on_court_player     Boolean
+
+    has (Season, Gamecode, NUM_ANOT)? False
+    stint-like columns: []
+
+    >>> pbp_poss does NOT carry both the event index and a stint id.
+
+  Lineup-set fallback viability (are 10-man states unique per game?):
+    stints: 279,174 | 10-man states recurring within a game: 9,771
+    max recurrences of one state in a game: 7
+    >>> lineup-set join would be MANY-TO-MANY on those. pbp bridge preferred.
+
+========================================================================
+C. PER-WINDOW PLAYER -> BASE COLUMN MAPPING
+========================================================================
+
+  [rapm_design] players=rapm_players
+    rows=2183  cols=['col', 'player_id', 'off_offset', 'def_offset', 'n_games']
+shape: (3, 5)
+┌─────┬───────────┬────────────┬────────────┬─────────┐
+│ col ┆ player_id ┆ off_offset ┆ def_offset ┆ n_games │
+│ --- ┆ ---       ┆ ---        ┆ ---        ┆ ---     │
+│ i64 ┆ str       ┆ i32        ┆ i32        ┆ u32     │
+╞═════╪═══════════╪════════════╪════════════╪═════════╡
+│ 0   ┆ 000595    ┆ 0          ┆ 2183       ┆ 1       │
+│ 1   ┆ A1        ┆ 0          ┆ 2183       ┆ 1       │
+│ 2   ┆ P000002   ┆ 0          ┆ 2183       ┆ 6       │
+└─────┴───────────┴────────────┴────────────┴─────────┘
+    X shape = (296683, 4366)
+    n_players*2 = 4366  -> matches X cols? True
+    off_offset: min=0 max=0 contiguous=False
+    def_offset: min=2183 max=2183 contiguous=False
+    col: min=0 max=2182 contiguous=True
+    max offset=2183 vs X cols=4366 -> in range? True
+
+  [rapm_dash_design] players=rapm_dash_players
+    rows=701  cols=['col', 'player_id', 'off_offset', 'def_offset', 'n_games']
+shape: (3, 5)
+┌─────┬───────────┬────────────┬────────────┬─────────┐
+│ col ┆ player_id ┆ off_offset ┆ def_offset ┆ n_games │
+│ --- ┆ ---       ┆ ---        ┆ ---        ┆ ---     │
+│ i64 ┆ str       ┆ i32        ┆ i32        ┆ u32     │
+╞═════╪═══════════╪════════════╪════════════╪═════════╡
+│ 0   ┆ P000007   ┆ 0          ┆ 701        ┆ 18      │
+│ 1   ┆ P000046   ┆ 0          ┆ 701        ┆ 23      │
+│ 2   ┆ P000229   ┆ 0          ┆ 701        ┆ 74      │
+└─────┴───────────┴────────────┴────────────┴─────────┘
+    X shape = (101937, 1402)
+    n_players*2 = 1402  -> matches X cols? True
+    off_offset: min=0 max=0 contiguous=False
+    def_offset: min=701 max=701 contiguous=False
+    col: min=0 max=700 contiguous=True
+    max offset=701 vs X cols=1402 -> in range? True
+
+  [rapm_eval_design] players=rapm_eval_players
+    rows=677  cols=['col', 'player_id', 'off_offset', 'def_offset', 'n_games']
+shape: (3, 5)
+┌─────┬───────────┬────────────┬────────────┬─────────┐
+│ col ┆ player_id ┆ off_offset ┆ def_offset ┆ n_games │
+│ --- ┆ ---       ┆ ---        ┆ ---        ┆ ---     │
+│ i64 ┆ str       ┆ i32        ┆ i32        ┆ u32     │
+╞═════╪═══════════╪════════════╪════════════╪═════════╡
+│ 0   ┆ P000007   ┆ 0          ┆ 677        ┆ 33      │
+│ 1   ┆ P000046   ┆ 0          ┆ 677        ┆ 49      │
+│ 2   ┆ P000229   ┆ 0          ┆ 677        ┆ 53      │
+└─────┴───────────┴────────────┴────────────┴─────────┘
+    X shape = (95911, 1354)
+    n_players*2 = 1354  -> matches X cols? True
+    off_offset: min=0 max=0 contiguous=False
+    def_offset: min=677 max=677 contiguous=False
+    col: min=0 max=676 contiguous=True
+    max offset=677 vs X cols=1354 -> in range? True
+
+========================================================================
+D. DESIGN ROW ORDER — which stints_ids filter reproduces `groups` exactly?
+========================================================================
+
+  [rapm_design] design rows = 296,683   seasons 2007-2025
+    design season span: 2007 -> 2025  (n=19)
+    season only                      count 279,174 (x2=558,348) -> no
+    season + poss>0                  count 164,117 (x2=328,234) -> no
+    season + lineup_ok               count 279,174 (x2=558,348) -> no
+    season + lineup_ok + poss>0      count 164,117 (x2=328,234) -> no
+    season + distinct5               count 279,141 (x2=558,282) -> no
+    season + distinct5 + poss>0      count 164,097 (x2=328,194) -> no
+    >>> multiset match: NONE FOUND
+
+  [rapm_dash_design] design rows = 101,937   seasons 2021-2025
+    design season span: 2021 -> 2025  (n=5)
+    season only                      count 100,061 (x2=200,122) -> no
+    season + poss>0                  count 56,643 (x2=113,286) -> no
+    season + lineup_ok               count 100,061 (x2=200,122) -> no
+    season + lineup_ok + poss>0      count 56,643 (x2=113,286) -> no
+    season + distinct5               count 100,061 (x2=200,122) -> no
+    season + distinct5 + poss>0      count 56,643 (x2=113,286) -> no
+    >>> multiset match: NONE FOUND
+
+  [rapm_eval_design] design rows = 95,911   seasons 2020-2024
+    design season span: 2020 -> 2024  (n=5)
+    season only                      count 93,068 (x2=186,136) -> no
+    season + poss>0                  count 53,236 (x2=106,472) -> no
+    season + lineup_ok               count 93,068 (x2=186,136) -> no
+    season + lineup_ok + poss>0      count 53,236 (x2=106,472) -> no
+    season + distinct5               count 93,068 (x2=186,136) -> no
+    season + distinct5 + poss>0      count 53,236 (x2=106,472) -> no
+    >>> multiset match: NONE FOUND
+
+========================================================================
+E. BUCKET PRECEDENCE — partition, and do flags override location?
+========================================================================
+  rows=41,311   sum of bucket counts must equal rows if partition
+shape: (6, 2)
+┌───────────────────┬───────┐
+│ bucket            ┆ n     │
+│ ---               ┆ ---   │
+│ str               ┆ u32   │
+╞═══════════════════╪═══════╡
+│ above_break_three ┆ 13688 │
+│ at_rim            ┆ 11122 │
+│ mid_range         ┆ 9671  │
+│ second_chance     ┆ 2741  │
+│ corner_three      ┆ 2135  │
+│ transition        ┆ 1954  │
+└───────────────────┴───────┘
+  sum = 41,311  ==  rows? True
+
+  raw flag values present:
+shape: (2, 2)
+┌─────┬───────┐
+│ fb  ┆ len   │
+│ --- ┆ ---   │
+│ str ┆ u32   │
+╞═════╪═══════╡
+│ 0   ┆ 39357 │
+│ 1   ┆ 1954  │
+└─────┴───────┘
+shape: (2, 2)
+┌─────┬───────┐
+│ sc  ┆ len   │
+│ --- ┆ ---   │
+│ str ┆ u32   │
+╞═════╪═══════╡
+│ 0   ┆ 38529 │
+│ 1   ┆ 2782  │
+└─────┴───────┘
+
+  CROSS-TAB bucket x (fastbreak, second_chance):
+shape: (7, 4)
+┌───────────────────┬─────┬─────┬───────┐
+│ bucket            ┆ fb  ┆ sc  ┆ n     │
+│ ---               ┆ --- ┆ --- ┆ ---   │
+│ str               ┆ str ┆ str ┆ u32   │
+╞═══════════════════╪═════╪═════╪═══════╡
+│ above_break_three ┆ 0   ┆ 0   ┆ 13688 │
+│ at_rim            ┆ 0   ┆ 0   ┆ 11122 │
+│ corner_three      ┆ 0   ┆ 0   ┆ 2135  │
+│ mid_range         ┆ 0   ┆ 0   ┆ 9671  │
+│ second_chance     ┆ 0   ┆ 1   ┆ 2741  │
+│ transition        ┆ 1   ┆ 0   ┆ 1913  │
+│ transition        ┆ 1   ┆ 1   ┆ 41    │
+└───────────────────┴─────┴─────┴───────┘
+
+  >>> READ THIS: if rows exist where bucket is a LOCATION bucket
+      (at_rim/mid_range/corner_three/above_break_three) AND fb='1' or sc='1',
+      then flags do NOT override location and the two axes are independent.
+      If location buckets are ~always fb=0,sc=0, then precedence IS applied
+      and the location buckets change meaning across the 2015-16 flag cliff.
+
+  location-bucket rows carrying a positive flag: 0
+      >>> PRECEDENCE CONFIRMED. Use the 4-bucket baseline / 6-bucket
+          dash+eval split. Do NOT rely on the per-column mask alone.
+
+========================================================================
+Paste this whole output back.
+========================================================================

@@ -1,0 +1,19 @@
+{
+  "at_rim_radius": 200.6411503407793,
+  "at_rim_purity": 0.9969701341797721,
+  "corner_rule": "2d",
+  "corner_abs_x_min": 664.0,
+  "corner_y_max": 225.0,
+  "corner_purity": 0.9991784111736081,
+  "end_to_end_agreement": 0.9979244046318549,
+  "two_pt_codes": [
+    "2FGA",
+    "2FGM"
+  ],
+  "three_pt_codes": [
+    "3FGA",
+    "3FGM"
+  ],
+  "trustworthy": true,
+  "note": "Recovered by fitting boundaries to the Week 2 manually-validated tagger output. Situation flags (FASTBREAK/SECOND_CHANCE) are ignored entirely: they are populated on made shots only and cannot support efficiency estimation."
+}

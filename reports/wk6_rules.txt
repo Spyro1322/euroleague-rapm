@@ -1,0 +1,150 @@
+
+==========================================================================
+1. COORDINATE SYSTEM
+==========================================================================
+  rows: 41,311
+  x:   -740.0    -690.0    -156.0       0.0     163.0     683.0     746.0   (min p1 p25 p50 p75 p99 max)
+  y:   -119.0     -31.0      75.0     200.0     533.0     840.0    1304.0   (min p1 p25 p50 p75 p99 max)
+  r:      0.0      12.0     151.3     394.4     714.2     895.2    1460.6   (min p1 p25 p50 p75 p99 max)
+
+  per-bucket geometry (median |x|, median y, median r):
+shape: (6, 7)
+┌───────────────────┬───────┬─────────┬───────┬────────────┬────────────┬────────────┐
+│ bucket            ┆ n     ┆ |x|_med ┆ y_med ┆ r_med      ┆ r_p05      ┆ r_p95      │
+│ ---               ┆ ---   ┆ ---     ┆ ---   ┆ ---        ┆ ---        ┆ ---        │
+│ str               ┆ u32   ┆ f64     ┆ f64   ┆ f64        ┆ f64        ┆ f64        │
+╞═══════════════════╪═══════╪═════════╪═══════╪════════════╪════════════╪════════════╡
+│ transition        ┆ 1954  ┆ 81.0    ┆ 62.0  ┆ 114.61239  ┆ 12.0       ┆ 722.814637 │
+│ at_rim            ┆ 11122 ┆ 87.0    ┆ 75.0  ┆ 131.137333 ┆ 18.0       ┆ 190.276115 │
+│ second_chance     ┆ 2741  ┆ 94.0    ┆ 106.0 ┆ 153.16984  ┆ 18.973666  ┆ 763.980366 │
+│ mid_range         ┆ 9671  ┆ 188.0   ┆ 232.0 ┆ 339.094382 ┆ 207.992788 ┆ 561.121199 │
+│ corner_three      ┆ 2135  ┆ 683.0   ┆ 37.0  ┆ 688.443171 ┆ 671.241387 ┆ 715.025174 │
+│ above_break_three ┆ 13688 ┆ 426.0   ┆ 614.0 ┆ 735.429806 ┆ 688.698047 ┆ 856.868718 │
+└───────────────────┴───────┴─────────┴───────┴────────────┴────────────┴────────────┘
+
+  >>> If y is never negative and r_med for at_rim is small, the origin is
+      the basket and r is distance from it. That is the assumption below.
+
+==========================================================================
+2. AT_RIM vs MID_RANGE  (among 2-point attempts)
+==========================================================================
+  labelled 2FG location rows: 20,793
+
+  best radius cut: r = 200.6   (at_rim < t <= mid_range)
+  purity: 0.99697
+  misclassified under this rule: 63 of 20,793
+  at_rim   r: p05=18 med=131 p95=190
+  mid_range r: p05=208 med=339 p95=561
+
+==========================================================================
+3. CORNER_THREE vs ABOVE_BREAK_THREE  (among 3-point attempts)
+==========================================================================
+  labelled 3FG location rows: 15,823
+
+  2D rule: corner  <=>  |x| >= 664.0  AND  y <= 225.0
+  purity: 0.99918
+
+  1D fallback (y only): cut y = 221.6  (corner < t <= above_break)
+  purity: 0.99077
+
+  >>> using the 2D rule
+
+==========================================================================
+4. ARE THE RECOVERED RULES THE TAGGER'S RULES?
+==========================================================================
+  at_rim / mid_range purity      : 0.99697
+  corner / above_break purity    : 0.99918
+
+  >>> BOTH >= 0.995. The recovered rules reproduce the validated labels.
+      Safe to apply them to the situation-flagged rows.
+
+==========================================================================
+5. RECLASSIFYING THE SITUATION-FLAGGED ROWS
+==========================================================================
+  rows to reclassify: 4,695
+shape: (5, 3)
+┌───────────────┬───────────┬──────┐
+│ bucket        ┆ ID_ACTION ┆ n    │
+│ ---           ┆ ---       ┆ ---  │
+│ str           ┆ str       ┆ u32  │
+╞═══════════════╪═══════════╪══════╡
+│ second_chance ┆ 2FGM      ┆ 2114 │
+│ second_chance ┆ 3FGM      ┆ 626  │
+│ second_chance ┆ 3FGA      ┆ 1    │
+│ transition    ┆ 2FGM      ┆ 1631 │
+│ transition    ┆ 3FGM      ┆ 323  │
+└───────────────┴───────────┴──────┘
+
+  where the reclaimed shots went:
+shape: (8, 3)
+┌───────────────┬───────────────────┬──────┐
+│ bucket        ┆ bucket_4b         ┆ n    │
+│ ---           ┆ ---               ┆ ---  │
+│ str           ┆ str               ┆ u32  │
+╞═══════════════╪═══════════════════╪══════╡
+│ second_chance ┆ at_rim            ┆ 1696 │
+│ second_chance ┆ above_break_three ┆ 523  │
+│ second_chance ┆ mid_range         ┆ 418  │
+│ second_chance ┆ corner_three      ┆ 104  │
+│ transition    ┆ at_rim            ┆ 1510 │
+│ transition    ┆ above_break_three ┆ 253  │
+│ transition    ┆ mid_range         ┆ 121  │
+│ transition    ┆ corner_three      ┆ 70   │
+└───────────────┴───────────────────┴──────┘
+
+  agreement on already-located rows: 36,540/36,616 = 0.99792
+  (this is the same purity measured end-to-end through the actual expression)
+
+==========================================================================
+6. DOES THE CORRECTION MOVE FG% TOWARD LEAGUE NORMS?
+==========================================================================
+  BEFORE (precedence applied, situation buckets excluded):
+shape: (4, 6)
+┌───────────────────┬───────┬──────┬───────┬──────────┬─────────────┐
+│ bucket            ┆ att   ┆ made ┆ pts   ┆ fg_pct   ┆ pts_per_100 │
+│ ---               ┆ ---   ┆ ---  ┆ ---   ┆ ---      ┆ ---         │
+│ str               ┆ u32   ┆ u32  ┆ i32   ┆ f64      ┆ f64         │
+╞═══════════════════╪═══════╪══════╪═══════╪══════════╪═════════════╡
+│ above_break_three ┆ 13688 ┆ 4337 ┆ 13011 ┆ 0.316847 ┆ 95.054062   │
+│ at_rim            ┆ 11122 ┆ 6076 ┆ 12152 ┆ 0.546305 ┆ 109.260924  │
+│ corner_three      ┆ 2135  ┆ 840  ┆ 2520  ┆ 0.393443 ┆ 118.032787  │
+│ mid_range         ┆ 9671  ┆ 3573 ┆ 7146  ┆ 0.369455 ┆ 73.891014   │
+└───────────────────┴───────┴──────┴───────┴──────────┴─────────────┘
+
+  AFTER (four buckets, all shots, flags ignored):
+shape: (4, 6)
+┌───────────────────┬───────┬──────┬───────┬──────────┬─────────────┐
+│ bucket_4b         ┆ att   ┆ made ┆ pts   ┆ fg_pct   ┆ pts_per_100 │
+│ ---               ┆ ---   ┆ ---  ┆ ---   ┆ ---      ┆ ---         │
+│ str               ┆ u32   ┆ u32  ┆ i32   ┆ f64      ┆ f64         │
+╞═══════════════════╪═══════╪══════╪═══════╪══════════╪═════════════╡
+│ above_break_three ┆ 14451 ┆ 5108 ┆ 15324 ┆ 0.35347  ┆ 106.041104  │
+│ at_rim            ┆ 14391 ┆ 9305 ┆ 18610 ┆ 0.646585 ┆ 129.316934  │
+│ corner_three      ┆ 2322  ┆ 1018 ┆ 3054  ┆ 0.438415 ┆ 131.524548  │
+│ mid_range         ┆ 10147 ┆ 4089 ┆ 8178  ┆ 0.402976 ┆ 80.59525    │
+└───────────────────┴───────┴──────┴───────┴──────────┴─────────────┘
+
+  >>> Expect at_rim FG% to rise sharply (reclaimed made layups/dunks) and
+      above_break_three to rise toward ~0.35. If at_rim lands near 0.60-0.65
+      and the threes near 0.35-0.40, the correction is behaving.
+
+==========================================================================
+7. WRITING OUTPUTS
+==========================================================================
+  reports/location_rules.json
+  warehouse/tagged_shots_ids_4b.parquet  (41,311 rows)
+shape: (4, 2)
+┌───────────────────┬───────┐
+│ bucket            ┆ n     │
+│ ---               ┆ ---   │
+│ str               ┆ u32   │
+╞═══════════════════╪═══════╡
+│ above_break_three ┆ 14451 │
+│ at_rim            ┆ 14391 │
+│ mid_range         ┆ 10147 │
+│ corner_three      ┆ 2322  │
+└───────────────────┴───────┘
+
+  next:
+    python3 scripts/build_shotctx_design.py --window dash \
+        --shots warehouse/tagged_shots_ids_4b.parquet

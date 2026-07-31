@@ -1,0 +1,73 @@
+nohup: ignoring input
+INFO:shots:season 2007 — 231 played games
+INFO:shots:season 2007 — 193 written, 38 present, 0 empty, 0 failed
+INFO:shots:season 2008 — 188 played games
+INFO:shots:season 2008 — 188 written, 0 present, 0 empty, 0 failed
+INFO:shots:season 2009 — 188 played games
+INFO:shots:season 2009 — 188 written, 0 present, 0 empty, 0 failed
+INFO:shots:season 2010 — 189 played games
+INFO:shots:season 2010 — 189 written, 0 present, 0 empty, 0 failed
+INFO:shots:season 2011 — 188 played games
+INFO:shots:season 2011 — 188 written, 0 present, 0 empty, 0 failed
+INFO:shots:season 2012 — 253 played games
+INFO:shots:season 2012 — 253 written, 0 present, 0 empty, 0 failed
+INFO:shots:season 2013 — 253 played games
+ERROR:shots:  game 197 failed (after retries): HTTPSConnectionPool(host='live.euroleague.net', port=443): Max retries exceeded with url: /api/Points?gamecode=197&seasoncode=E2013 (Caused by NameResolutionError("HTTPSConnection(host='live.euroleague.net', port=443): Failed to resolve 'live.euroleague.net' ([Errno -3] Temporary failure in name resolution)"))
+ERROR:shots:  game 198 failed (after retries): HTTPSConnectionPool(host='live.euroleague.net', port=443): Max retries exceeded with url: /api/Points?gamecode=198&seasoncode=E2013 (Caused by NameResolutionError("HTTPSConnection(host='live.euroleague.net', port=443): Failed to resolve 'live.euroleague.net' ([Errno -3] Temporary failure in name resolution)"))
+INFO:shots:season 2013 — 251 written, 0 present, 0 empty, 2 failed (see data/shots/season=2013/_MISSING.csv)
+INFO:shots:season 2014 — 251 played games
+INFO:shots:season 2014 — 251 written, 0 present, 0 empty, 0 failed
+INFO:shots:season 2015 — 250 played games
+ERROR:shots:  game 171 failed (after retries): HTTPSConnectionPool(host='live.euroleague.net', port=443): Max retries exceeded with url: /api/Points?gamecode=171&seasoncode=E2015 (Caused by NameResolutionError("HTTPSConnection(host='live.euroleague.net', port=443): Failed to resolve 'live.euroleague.net' ([Errno -3] Temporary failure in name resolution)"))
+ERROR:shots:  game 172 failed (after retries): HTTPSConnectionPool(host='live.euroleague.net', port=443): Max retries exceeded with url: /api/Points?gamecode=172&seasoncode=E2015 (Caused by NameResolutionError("HTTPSConnection(host='live.euroleague.net', port=443): Failed to resolve 'live.euroleague.net' ([Errno -3] Temporary failure in name resolution)"))
+ERROR:shots:  game 173 failed (after retries): HTTPSConnectionPool(host='live.euroleague.net', port=443): Max retries exceeded with url: /api/Points?gamecode=173&seasoncode=E2015 (Caused by NameResolutionError("HTTPSConnection(host='live.euroleague.net', port=443): Failed to resolve 'live.euroleague.net' ([Errno -3] Temporary failure in name resolution)"))
+ERROR:shots:  game 174 failed (after retries): HTTPSConnectionPool(host='live.euroleague.net', port=443): Max retries exceeded with url: /api/Points?gamecode=174&seasoncode=E2015 (Caused by NameResolutionError("HTTPSConnection(host='live.euroleague.net', port=443): Failed to resolve 'live.euroleague.net' ([Errno -3] Temporary failure in name resolution)"))
+INFO:shots:season 2015 — 246 written, 0 present, 0 empty, 4 failed (see data/shots/season=2015/_MISSING.csv)
+INFO:shots:season 2016 — 259 played games
+INFO:shots:season 2016 — 259 written, 0 present, 0 empty, 0 failed
+INFO:shots:season 2017 — 260 played games
+INFO:shots:season 2017 — 260 written, 0 present, 0 empty, 0 failed
+INFO:shots:season 2018 — 260 played games
+ERROR:shots:  game 71 failed (after retries): ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+INFO:shots:season 2018 — 258 written, 0 present, 1 empty, 1 failed (see data/shots/season=2018/_MISSING.csv)
+INFO:shots:season 2019 — 252 played games
+INFO:shots:season 2019 — 252 written, 0 present, 0 empty, 0 failed
+INFO:shots:season 2020 — 328 played games
+INFO:shots:season 2020 — 328 written, 0 present, 0 empty, 0 failed
+INFO:shots:season 2021 — 299 played games
+INFO:shots:season 2021 — 299 written, 0 present, 0 empty, 0 failed
+INFO:shots:season 2022 — 328 played games
+INFO:shots:season 2022 — 328 written, 0 present, 0 empty, 0 failed
+INFO:shots:season 2023 — 331 played games
+INFO:shots:season 2023 — 0 written, 331 present, 0 empty, 0 failed
+INFO:shots:season 2024 — 330 played games
+INFO:shots:season 2024 — 330 written, 0 present, 0 empty, 0 failed
+INFO:shots:season 2025 — 402 played games
+INFO:shots:season 2025 — 402 written, 0 present, 0 empty, 0 failed
+Traceback (most recent call last):
+  File "/mnt/d/AI Applied in Sports/Thesis/euroleague-rapm/scripts/ingest_shots.py", line 227, in <module>
+    main()
+  File "/mnt/d/AI Applied in Sports/Thesis/euroleague-rapm/scripts/ingest_shots.py", line 223, in main
+    coverage_report()
+  File "/mnt/d/AI Applied in Sports/Thesis/euroleague-rapm/scripts/ingest_shots.py", line 185, in coverage_report
+    df = pl.read_parquet(files)
+         ^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/d/AI Applied in Sports/Thesis/euroleague-rapm/venv/lib/python3.12/site-packages/polars/_utils/deprecation.py", line 128, in wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/d/AI Applied in Sports/Thesis/euroleague-rapm/venv/lib/python3.12/site-packages/polars/_utils/deprecation.py", line 128, in wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/d/AI Applied in Sports/Thesis/euroleague-rapm/venv/lib/python3.12/site-packages/polars/io/parquet/functions.py", line 293, in read_parquet
+    return lf.collect()
+           ^^^^^^^^^^^^
+  File "/mnt/d/AI Applied in Sports/Thesis/euroleague-rapm/venv/lib/python3.12/site-packages/polars/_utils/deprecation.py", line 97, in wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/d/AI Applied in Sports/Thesis/euroleague-rapm/venv/lib/python3.12/site-packages/polars/lazyframe/opt_flags.py", line 343, in wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/d/AI Applied in Sports/Thesis/euroleague-rapm/venv/lib/python3.12/site-packages/polars/lazyframe/frame.py", line 2630, in collect
+    return wrap_df(ldf.collect(engine, callback))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+polars.exceptions.SchemaError: data type mismatch for column FASTBREAK: incoming: String != target: Null

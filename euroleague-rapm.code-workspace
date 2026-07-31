@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"name": "euroleague-rapm",
+			"path": "."
+		},
+		{
+			"name": "files",
+			"path": "../files"
+		}
+	],
+	"settings": {
+		"git.ignoreLimitWarning": true,
+		"makefile.configureOnOpen": false
+	}
+}

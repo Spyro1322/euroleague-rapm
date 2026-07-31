@@ -3,8 +3,7 @@ streamlit_app.py -- Euroleague RAPM dashboard (O5).
 
 Renders pre-computed Parquet ONLY -- no training in the Space (proposal constraint).
 Week 4 ships Tab 1 (RAPM leaderboard with bootstrap CIs). Tabs 2-5 are stubs that
-later weeks fill in. Point DATA_DIR at the warehouse locally; the Space bundles the
-same parquet artifacts (Wk5).
+later weeks fill in. Point DATA_DIR at the warehouse locally; override for other layouts / HF Spaces (Wk5).
 
 Inputs (written by fit_ridge_rapm.py --bootstrap):
     {DATA_DIR}/rapm_dash.parquet       current-form (2021-25), default view
@@ -17,6 +16,9 @@ from pathlib import Path
 
 import pandas as pd
 import streamlit as st
+
+import tab2_shotcontext
+
 
 # Defaults to a warehouse/ beside this file; override for other layouts / HF Spaces.
 DATA_DIR = Path(os.environ.get("RAPM_WAREHOUSE", Path(__file__).parent / "warehouse"))
@@ -109,10 +111,12 @@ def main():
     st.caption("Regularized Adjusted Plus-Minus, 2007-08 to 2025-26. "
                "Pre-computed artifacts; no live training.")
     t1, t2, t3, t4, t5 = st.tabs(
-        ["Leaderboard", "Play-type radar", "Synergy", "Similarity", "Methodology"])
+        ["Leaderboard", "Shot context", "Synergy", "Similarity", "Methodology"])
     with t1:
         leaderboard_tab()
-    for tab, label, wk in ((t2, "Play-type radar", 6), (t3, "Synergy", 8),
+    with t2:                                          # <- new
+        tab2_shotcontext.render(DATA_DIR)            # <- new
+    for tab, label, wk in ((t3, "Synergy", 8),        # <- t2 removed from the loop
                            (t4, "Similarity finder", 9), (t5, "Methodology", 9)):
         with tab:
             st.info(f"{label} - coming in Week {wk}.")

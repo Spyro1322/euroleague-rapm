@@ -1,0 +1,195 @@
+
+==========================================================================
+1. LAYOUT  —  landing root = /mnt/d/AI Applied in Sports/Thesis/euroleague-rapm/landing
+==========================================================================
+  parquet shards found: 5,039
+  shard distribution (first two path levels):
+    boxscore_players/season=2007/  ->  231 shard(s)
+    boxscore_players/season=2008/  ->  188 shard(s)
+    boxscore_players/season=2009/  ->  188 shard(s)
+    boxscore_players/season=2010/  ->  189 shard(s)
+    boxscore_players/season=2011/  ->  188 shard(s)
+    boxscore_players/season=2012/  ->  253 shard(s)
+    boxscore_players/season=2013/  ->  253 shard(s)
+    boxscore_players/season=2014/  ->  251 shard(s)
+    boxscore_players/season=2015/  ->  250 shard(s)
+    boxscore_players/season=2016/  ->  259 shard(s)
+    boxscore_players/season=2017/  ->  260 shard(s)
+    boxscore_players/season=2018/  ->  259 shard(s)
+    boxscore_players/season=2019/  ->  252 shard(s)
+    boxscore_players/season=2020/  ->  328 shard(s)
+    boxscore_players/season=2021/  ->  299 shard(s)
+    boxscore_players/season=2022/  ->  328 shard(s)
+    boxscore_players/season=2023/  ->  331 shard(s)
+    boxscore_players/season=2024/  ->  330 shard(s)
+    boxscore_players/season=2025/  ->  402 shard(s)
+
+  example shard paths:
+    boxscore_players/season=2007/game_00001.parquet
+    boxscore_players/season=2007/game_00002.parquet
+    boxscore_players/season=2007/game_00003.parquet
+    ... and 5,036 more
+
+  seasons inferred from path: [2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]
+
+==========================================================================
+2. COMPLETENESS MARKERS  (_SUCCESS / _MISSING.csv per season)
+==========================================================================
+  _SUCCESS markers: 18
+  _MISSING.csv files: 1
+  seasons with _SUCCESS: [2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2019, 2020, 2021, 2022, 2023, 2024, 2025]
+  seasons with _MISSING: [2018]
+
+  _MISSING.csv contents:
+    boxscore_players/season=2018/_MISSING.csv: 1 row(s)
+shape: (1, 2)
+┌────────┬──────────┐
+│ season ┆ gamecode │
+│ ---    ┆ ---      │
+│ i64    ┆ i64      │
+╞════════╪══════════╡
+│ 2018   ┆ 21       │
+└────────┴──────────┘
+
+  seasons with shards but NO _SUCCESS: [2018]
+  expected seasons with no shards at all: []
+
+==========================================================================
+3. TAGGER INPUT SCHEMA  (are the required columns present, per season?)
+==========================================================================
+  required: ['Season', 'Gamecode', 'NUM_ANOT', 'TEAM', 'PLAYER', 'ID_ACTION', 'COORD_X', 'COORD_Y', 'FASTBREAK', 'SECOND_CHANCE']
+  2007:  29 cols  shards= 231  MISSING ['NUM_ANOT', 'TEAM', 'PLAYER', 'ID_ACTION', 'COORD_X', 'COORD_Y', 'FASTBREAK', 'SECOND_CHANCE']
+  2008:  29 cols  shards= 188  MISSING ['NUM_ANOT', 'TEAM', 'PLAYER', 'ID_ACTION', 'COORD_X', 'COORD_Y', 'FASTBREAK', 'SECOND_CHANCE']
+  2009:  29 cols  shards= 188  MISSING ['NUM_ANOT', 'TEAM', 'PLAYER', 'ID_ACTION', 'COORD_X', 'COORD_Y', 'FASTBREAK', 'SECOND_CHANCE']
+  2010:  29 cols  shards= 189  MISSING ['NUM_ANOT', 'TEAM', 'PLAYER', 'ID_ACTION', 'COORD_X', 'COORD_Y', 'FASTBREAK', 'SECOND_CHANCE']
+  2011:  29 cols  shards= 188  MISSING ['NUM_ANOT', 'TEAM', 'PLAYER', 'ID_ACTION', 'COORD_X', 'COORD_Y', 'FASTBREAK', 'SECOND_CHANCE']
+  2012:  29 cols  shards= 253  MISSING ['NUM_ANOT', 'TEAM', 'PLAYER', 'ID_ACTION', 'COORD_X', 'COORD_Y', 'FASTBREAK', 'SECOND_CHANCE']
+  2013:  29 cols  shards= 253  MISSING ['NUM_ANOT', 'TEAM', 'PLAYER', 'ID_ACTION', 'COORD_X', 'COORD_Y', 'FASTBREAK', 'SECOND_CHANCE']
+  2014:  29 cols  shards= 251  MISSING ['NUM_ANOT', 'TEAM', 'PLAYER', 'ID_ACTION', 'COORD_X', 'COORD_Y', 'FASTBREAK', 'SECOND_CHANCE']
+  2015:  29 cols  shards= 250  MISSING ['NUM_ANOT', 'TEAM', 'PLAYER', 'ID_ACTION', 'COORD_X', 'COORD_Y', 'FASTBREAK', 'SECOND_CHANCE']
+  2016:  29 cols  shards= 259  MISSING ['NUM_ANOT', 'TEAM', 'PLAYER', 'ID_ACTION', 'COORD_X', 'COORD_Y', 'FASTBREAK', 'SECOND_CHANCE']
+  2017:  29 cols  shards= 260  MISSING ['NUM_ANOT', 'TEAM', 'PLAYER', 'ID_ACTION', 'COORD_X', 'COORD_Y', 'FASTBREAK', 'SECOND_CHANCE']
+  2018:  29 cols  shards= 259  MISSING ['NUM_ANOT', 'TEAM', 'PLAYER', 'ID_ACTION', 'COORD_X', 'COORD_Y', 'FASTBREAK', 'SECOND_CHANCE']
+  2019:  29 cols  shards= 252  MISSING ['NUM_ANOT', 'TEAM', 'PLAYER', 'ID_ACTION', 'COORD_X', 'COORD_Y', 'FASTBREAK', 'SECOND_CHANCE']
+  2020:  29 cols  shards= 328  MISSING ['NUM_ANOT', 'TEAM', 'PLAYER', 'ID_ACTION', 'COORD_X', 'COORD_Y', 'FASTBREAK', 'SECOND_CHANCE']
+  2021:  29 cols  shards= 299  MISSING ['NUM_ANOT', 'TEAM', 'PLAYER', 'ID_ACTION', 'COORD_X', 'COORD_Y', 'FASTBREAK', 'SECOND_CHANCE']
+  2022:  29 cols  shards= 328  MISSING ['NUM_ANOT', 'TEAM', 'PLAYER', 'ID_ACTION', 'COORD_X', 'COORD_Y', 'FASTBREAK', 'SECOND_CHANCE']
+  2023:  29 cols  shards= 331  MISSING ['NUM_ANOT', 'TEAM', 'PLAYER', 'ID_ACTION', 'COORD_X', 'COORD_Y', 'FASTBREAK', 'SECOND_CHANCE']
+  2024:  29 cols  shards= 330  MISSING ['NUM_ANOT', 'TEAM', 'PLAYER', 'ID_ACTION', 'COORD_X', 'COORD_Y', 'FASTBREAK', 'SECOND_CHANCE']
+  2025:  29 cols  shards= 402  MISSING ['NUM_ANOT', 'TEAM', 'PLAYER', 'ID_ACTION', 'COORD_X', 'COORD_Y', 'FASTBREAK', 'SECOND_CHANCE']
+
+  full column list (2007):
+    Season                       int64
+    Gamecode                     int64
+    Home                         int64
+    Player_ID                    large_string
+    IsStarter                    double
+    IsPlaying                    double
+    Team                         large_string
+    Dorsal                       large_string
+    Player                       large_string
+    Minutes                      string
+    Points                       int64
+    FieldGoalsMade2              int64
+    FieldGoalsAttempted2         int64
+    FieldGoalsMade3              int64
+    FieldGoalsAttempted3         int64
+    FreeThrowsMade               int64
+    FreeThrowsAttempted          int64
+    OffensiveRebounds            int64
+    DefensiveRebounds            int64
+    TotalRebounds                int64
+    Assistances                  int64
+    Steals                       int64
+    Turnovers                    int64
+    BlocksFavour                 int64
+    BlocksAgainst                int64
+    FoulsCommited                int64
+    FoulsReceived                int64
+    Valuation                    int64
+    Plusminus                    double
+
+  schema identical across all seasons.
+
+==========================================================================
+4. RE-TAG SCOPE  (landing seasons vs already-tagged seasons)
+==========================================================================
+  tagged_shots_ids covers: [2023] (41,311 rows)
+
+    season   shards     raw rows   status
+      2007      231        6,234   NEEDS TAGGING
+      2008      188        5,120   NEEDS TAGGING
+      2009      188        5,122   NEEDS TAGGING
+      2010      189        5,176   NEEDS TAGGING
+      2011      188        5,189   NEEDS TAGGING
+      2012      253        6,963   NEEDS TAGGING
+      2013      253        6,962   NEEDS TAGGING
+      2014      251        6,933   NEEDS TAGGING
+      2015      250        6,903   NEEDS TAGGING
+      2016      259        7,185   NEEDS TAGGING
+      2017      260        7,242   NEEDS TAGGING
+      2018      259        7,213   NEEDS TAGGING
+      2019      252        7,009   NEEDS TAGGING
+      2020      328        9,092   NEEDS TAGGING
+      2021      299        8,268   NEEDS TAGGING
+      2022      328        9,097   NEEDS TAGGING
+      2023      331        9,207   tagged
+      2024      330        9,183   NEEDS TAGGING
+      2025      402       11,148   NEEDS TAGGING
+
+  raw rows total:             139,246
+  raw rows to tag:            130,039  across 18 season(s)
+  seasons needing tag:   [2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2024, 2025]
+
+==========================================================================
+5. COVERAGE RE-VERIFICATION  (does the O3 decision still hold?)
+==========================================================================
+  Week 5 claims under test:
+    (a) pct_coords 0.97-0.99 for ALL 19 seasons
+    (b) FASTBREAK/SECOND_CHANCE ~0 pre-2015, ~0.76 in 2015, ~1.0 from 2016
+
+  PRESENT vs TRUE — these are different questions and the O3 decision
+  depends on the first, not the second:
+    present = the feed carries a value at all (either 0 or 1).
+              This is what the Week 5 'rate' numbers meant. A season
+              with present~0 has NO information on that flag.
+    true    = the value is 1, i.e. the shot really was a fastbreak /
+              second-chance. This is a basketball rate (~5-12%), and it
+              should be roughly flat across the flag-complete era.
+  A season where present is high but true is 0 would mean the flag is
+  carried but never set — a silent defect the Week 5 report could not
+  have distinguished from a genuinely low fastbreak rate.
+
+    season       rows   coords  fb_pres  fb_true  sc_pres  sc_true
+      2007          0      nan      nan      nan      nan      nan
+      2008          0      nan      nan      nan      nan      nan
+      2009          0      nan      nan      nan      nan      nan
+      2010          0      nan      nan      nan      nan      nan
+      2011          0      nan      nan      nan      nan      nan
+      2012          0      nan      nan      nan      nan      nan
+      2013          0      nan      nan      nan      nan      nan
+      2014          0      nan      nan      nan      nan      nan
+      2015          0      nan      nan      nan      nan      nan
+      2016          0      nan      nan      nan      nan      nan
+      2017          0      nan      nan      nan      nan      nan
+      2018          0      nan      nan      nan      nan      nan
+      2019          0      nan      nan      nan      nan      nan
+      2020          0      nan      nan      nan      nan      nan
+      2021          0      nan      nan      nan      nan      nan
+      2022          0      nan      nan      nan      nan      nan
+      2023          0      nan      nan      nan      nan      nan
+      2024          0      nan      nan      nan      nan      nan
+      2025          0      nan      nan      nan      nan      nan
+
+  (a) coordinate claim: HOLDS — every season >= 0.95
+
+  (b) flag availability, derived from presence (>= 0.9):
+      NO season reaches the presence threshold — the two situation
+      buckets are not estimable anywhere. O3 drops to 4 buckets.
+
+  (c) carried-but-never-set check:
+      clean — every flag-complete season also has a nonzero true rate.
+
+==========================================================================
+Paste this output back, together with diagnose_wk6_round2.py's.
+==========================================================================

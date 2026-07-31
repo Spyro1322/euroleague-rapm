@@ -1,0 +1,36 @@
+{
+  "window": "dash",
+  "min_support": 150.0,
+  "buckets": [
+    {
+      "bucket": "above_break_three",
+      "alpha": 10000.0,
+      "league_mean": 105.58883840617587,
+      "signal": 0.09811959539935113,
+      "verdict": "NONE"
+    },
+    {
+      "bucket": "at_rim",
+      "alpha": 3162.0,
+      "league_mean": 131.72061232559454,
+      "signal": 0.4784121918805184,
+      "verdict": "STRONG"
+    },
+    {
+      "bucket": "corner_three",
+      "alpha": 1000.0,
+      "league_mean": 125.58385476337358,
+      "signal": 0.04351039215794586,
+      "verdict": "NONE"
+    },
+    {
+      "bucket": "mid_range",
+      "alpha": 3162.0,
+      "league_mean": 80.40978387084691,
+      "signal": 0.336993025966457,
+      "verdict": "STRONG"
+    }
+  ],
+  "rows": 5608,
+  "players": 701
+}

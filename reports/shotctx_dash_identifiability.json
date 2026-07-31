@@ -1,0 +1,59 @@
+{
+  "window": "dash",
+  "verdicts": {
+    "at_rim": "STRONG",
+    "mid_range": "STRONG",
+    "above_break_three": "NONE",
+    "corner_three": "NONE"
+  },
+  "rows": [
+    {
+      "bucket": "corner_three",
+      "attempts": 11347.0,
+      "att_per_player": 16.18687589158345,
+      "y_sd": 140.3140188278874,
+      "dev_sd": 1.1093052003608332,
+      "dev_norm": 0.031807644121912566,
+      "corr_off": 0.04351039215794586,
+      "corr_def": 0.011495335016287585,
+      "signal": 0.04351039215794586,
+      "alpha": 1000.0
+    },
+    {
+      "bucket": "mid_range",
+      "attempts": 53394.0,
+      "att_per_player": 76.16833095577746,
+      "y_sd": 82.7762989483882,
+      "dev_sd": 0.4927860495544574,
+      "dev_norm": 0.05195646796637233,
+      "corr_off": 0.336993025966457,
+      "corr_def": -0.30628402752702566,
+      "signal": 0.336993025966457,
+      "alpha": 3162.0
+    },
+    {
+      "bucket": "at_rim",
+      "attempts": 70812.0,
+      "att_per_player": 101.01569186875892,
+      "y_sd": 74.93650588842932,
+      "dev_sd": 0.5741659605193333,
+      "dev_norm": 0.07700845741924099,
+      "corr_off": 0.36844995196530006,
+      "corr_def": -0.4784121918805184,
+      "signal": 0.4784121918805184,
+      "alpha": 3162.0
+    },
+    {
+      "bucket": "above_break_three",
+      "attempts": 74613.0,
+      "att_per_player": 106.43794579172611,
+      "y_sd": 116.3006370202003,
+      "dev_sd": 0.311081673154326,
+      "dev_norm": 0.02759564661119374,
+      "corr_off": 0.055132054146116945,
+      "corr_def": 0.09811959539935113,
+      "signal": 0.09811959539935113,
+      "alpha": 10000.0
+    }
+  ]
+}

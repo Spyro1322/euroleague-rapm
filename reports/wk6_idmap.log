@@ -1,0 +1,11 @@
+2026-07-30 17:51:52,590 INFO id_map: loaded 9 curated id merges from config/id_merges.csv
+2026-07-30 17:53:09,155 INFO id_map: PBP: 6081 (name,season,id) rows | boxscore: 6412
+2026-07-30 17:53:09,249 INFO id_map: boxscore adds 341 (name,season) combos unseen in PBP
+2026-07-30 17:53:09,522 INFO id_map: invariant holds: every (name, season) → exactly one id ✔
+2026-07-30 17:53:09,691 INFO id_map: wrote warehouse/player_id_map.parquet (6413 name-season rows, 2374 distinct players)
+2026-07-30 17:53:10,639 INFO id_map: all lineup (name, season) combos mapped ✔
+2026-07-30 17:53:12,298 INFO id_map: wrote warehouse/stints_ids.parquet (279174 stints)
+2026-07-30 17:53:12,659 INFO id_map: tagged shots span 19 season(s): 2007-2025
+2026-07-30 17:53:12,813 INFO id_map: shooters: 0/610554 unmapped (0.00%)
+2026-07-30 17:53:15,626 INFO id_map: wrote warehouse/tagged_shots_ids.parquet
+2026-07-30 17:53:15,627 INFO id_map: done → run build_rapm_design.py

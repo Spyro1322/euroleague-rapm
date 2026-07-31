@@ -1,0 +1,52 @@
+nohup: ignoring input
+INFO:shots:season 2007 — retry-only requested but no _MISSING.csv, nothing to do
+INFO:shots:season 2008 — retry-only requested but no _MISSING.csv, nothing to do
+INFO:shots:season 2009 — retry-only requested but no _MISSING.csv, nothing to do
+INFO:shots:season 2010 — retry-only requested but no _MISSING.csv, nothing to do
+INFO:shots:season 2011 — retry-only requested but no _MISSING.csv, nothing to do
+INFO:shots:season 2012 — retry-only requested but no _MISSING.csv, nothing to do
+INFO:shots:season 2013 — retry-only: 2 previously-failed games
+INFO:shots:season 2013 — 2 written, 0 present, 0 empty, 0 failed
+INFO:shots:season 2014 — retry-only requested but no _MISSING.csv, nothing to do
+INFO:shots:season 2015 — retry-only: 4 previously-failed games
+INFO:shots:season 2015 — 4 written, 0 present, 0 empty, 0 failed
+INFO:shots:season 2016 — retry-only requested but no _MISSING.csv, nothing to do
+INFO:shots:season 2017 — retry-only requested but no _MISSING.csv, nothing to do
+INFO:shots:season 2018 — retry-only: 1 previously-failed games
+INFO:shots:season 2018 — 1 written, 0 present, 0 empty, 0 failed
+INFO:shots:season 2019 — retry-only requested but no _MISSING.csv, nothing to do
+INFO:shots:season 2020 — retry-only requested but no _MISSING.csv, nothing to do
+INFO:shots:season 2021 — retry-only requested but no _MISSING.csv, nothing to do
+INFO:shots:season 2022 — retry-only requested but no _MISSING.csv, nothing to do
+INFO:shots:season 2023 — retry-only requested but no _MISSING.csv, nothing to do
+INFO:shots:season 2024 — retry-only requested but no _MISSING.csv, nothing to do
+INFO:shots:season 2025 — retry-only requested but no _MISSING.csv, nothing to do
+INFO:shots:── coverage by season (shots on disk) ──
+shape: (19, 6)
+┌────────┬───────┬───────┬────────────┬───────────────┬───────────────────┐
+│ Season ┆ shots ┆ games ┆ pct_coords ┆ pct_fastbreak ┆ pct_second_chance │
+│ ---    ┆ ---   ┆ ---   ┆ ---        ┆ ---           ┆ ---               │
+│ str    ┆ u32   ┆ u32   ┆ f64        ┆ f64           ┆ f64               │
+╞════════╪═══════╪═══════╪════════════╪═══════════════╪═══════════════════╡
+│ 2007   ┆ 33980 ┆ 231   ┆ 0.988729   ┆ 0.0           ┆ 0.0               │
+│ 2008   ┆ 27609 ┆ 188   ┆ 0.978485   ┆ 0.004274      ┆ 0.004274          │
+│ 2009   ┆ 27187 ┆ 188   ┆ 0.982565   ┆ 0.005039      ┆ 0.005039          │
+│ 2010   ┆ 27792 ┆ 189   ┆ 0.985895   ┆ 0.0           ┆ 0.0               │
+│ 2011   ┆ 27738 ┆ 188   ┆ 0.984966   ┆ 0.0           ┆ 0.0               │
+│ 2012   ┆ 36806 ┆ 253   ┆ 0.98435    ┆ 0.0           ┆ 0.0               │
+│ 2013   ┆ 36863 ┆ 253   ┆ 0.98272    ┆ 0.004015      ┆ 0.004015          │
+│ 2014   ┆ 37935 ┆ 251   ┆ 0.985001   ┆ 0.012442      ┆ 0.012442          │
+│ 2015   ┆ 37256 ┆ 250   ┆ 0.986284   ┆ 0.763582      ┆ 0.763582          │
+│ 2016   ┆ 38926 ┆ 259   ┆ 0.984997   ┆ 1.0           ┆ 1.0               │
+│ 2017   ┆ 39421 ┆ 260   ┆ 0.972477   ┆ 1.0           ┆ 1.0               │
+│ 2018   ┆ 38916 ┆ 259   ┆ 0.971271   ┆ 1.0           ┆ 1.0               │
+│ 2019   ┆ 38007 ┆ 252   ┆ 0.976031   ┆ 1.0           ┆ 1.0               │
+│ 2020   ┆ 48256 ┆ 328   ┆ 0.9765625  ┆ 1.0           ┆ 1.0               │
+│ 2021   ┆ 43555 ┆ 299   ┆ 0.973482   ┆ 1.0           ┆ 1.0               │
+│ 2022   ┆ 49409 ┆ 328   ┆ 0.97375    ┆ 1.0           ┆ 1.0               │
+│ 2023   ┆ 50159 ┆ 331   ┆ 0.975119   ┆ 1.0           ┆ 1.0               │
+│ 2024   ┆ 51193 ┆ 330   ┆ 0.980564   ┆ 1.0           ┆ 1.0               │
+│ 2025   ┆ 64137 ┆ 402   ┆ 0.983301   ┆ 1.0           ┆ 1.0               │
+└────────┴───────┴───────┴────────────┴───────────────┴───────────────────┘
+
+Columns present: ['ACTION', 'CONSOLE', 'COORD_X', 'COORD_Y', 'FASTBREAK', 'Gamecode', 'ID_ACTION', 'ID_PLAYER', 'MINUTE', 'NUM_ANOT', 'PLAYER', 'POINTS', 'POINTS_A', 'POINTS_B', 'POINTS_OFF_TURNOVER', 'SECOND_CHANCE', 'Season', 'TEAM', 'UTC', 'ZONE']

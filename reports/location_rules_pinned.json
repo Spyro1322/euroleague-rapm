@@ -1,0 +1,24 @@
+{
+  "at_rim_radius": 200.0,
+  "corner_abs_x_min": 660.0,
+  "corner_y_max": 225.0,
+  "two_pt_codes": [
+    "2FGA",
+    "2FGM"
+  ],
+  "three_pt_codes": [
+    "3FGA",
+    "3FGM"
+  ],
+  "buckets": [
+    "at_rim",
+    "mid_range",
+    "corner_three",
+    "above_break_three"
+  ],
+  "pinned": true,
+  "units": "centimetres",
+  "fiba_arc_r": 675,
+  "fiba_corner_r": 660,
+  "situation_flags": "ignored (populated on made shots only)"
+}

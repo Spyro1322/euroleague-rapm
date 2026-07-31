@@ -51,7 +51,7 @@ SEASON_COL = "Season"
 HOME_LINEUP_COL = "home_players"
 AWAY_LINEUP_COL = "away_players"
 
-SHOTS_IN = "warehouse/tagged_shots_2023.parquet"
+SHOTS_IN = "warehouse/tagged_shots.parquet"
 SHOTS_OUT = "warehouse/tagged_shots_ids.parquet"
 SHOTS_NAME_COL = "PLAYER"
 SHOTS_LIST_COLS = ["off_players", "def_players"]
@@ -207,15 +207,26 @@ def remap_stints(canon: pl.DataFrame) -> None:
 
 
 def remap_shots(canon: pl.DataFrame) -> None:
-    try:
-        df = pl.read_parquet(SHOTS_IN).with_row_index("_row")
-    except Exception:
-        LOG.warning("no tagged_shots at %s — skipping", SHOTS_IN)
-        return
+    # ---- CHANGED: was a try/except that warned and returned ------------------
+    p = Path(SHOTS_IN)
+    if not p.exists():
+        LOG.error("no tagged shots at %s — run tag_shots.py first. Refusing to "
+                  "continue silently.", SHOTS_IN)
+        sys.exit(4)
+    df = pl.read_parquet(p).with_row_index("_row")
+
+    seasons = sorted(df["Season"].unique().to_list())
+    LOG.info("tagged shots span %d season(s): %d-%d", len(seasons),
+             seasons[0], seasons[-1])
+    if len(seasons) < 19:
+        LOG.warning("only %d/19 seasons present. Missing: %s", len(seasons),
+                    [s for s in range(2007, 2026) if s not in seasons])
+    # ---- end change ----------------------------------------------------------
+
     if SHOTS_NAME_COL not in df.columns or SEASON_COL not in df.columns:
-        LOG.warning("tagged_shots lacks %r/%r — skipping (fix before Week 6/O3)",
-                    SHOTS_NAME_COL, SEASON_COL)
-        return
+        LOG.error("tagged_shots lacks %r/%r — cannot remap shooters.",
+                  SHOTS_NAME_COL, SEASON_COL)
+        sys.exit(5)
 
     out = df.join(canon.select("name", "season", "player_id"),
                   left_on=[SHOTS_NAME_COL, SEASON_COL],

@@ -60,46 +60,6 @@ MADE = {"2FGM": 2, "3FGM": 3, "LAYUPMD": 2, "DUNK": 2}
 
 ABSENT = {"", "-", "None", "none", "null", "NULL", "nan", "NaN", "False", "false"}
 
-# Columns whose parquet dtype DRIFTS across seasons. In the raw Points feed the
-# situation flags are physically absent before 2015, so polars infers Null dtype
-# for those shards and large_string for later ones. A plain
-# pl.read_parquet(glob) then throws SchemaError on the vertical concat -- the
-# same failure ingest_shots.py's coverage_report() hit in Week 5. These are cast
-# to Utf8 per shard before concatenation.
-DRIFTING = ("FASTBREAK", "SECOND_CHANCE", "POINTS_OFF_TURNOVER", "UTC",
-            "CONSOLE", "ZONE")
-
-
-def read_shots(pattern: str) -> pl.DataFrame:
-    """Read shot shards tolerantly across per-season dtype drift."""
-    root = pattern.split("**")[0].rstrip("/") if "**" in pattern else None
-    files = sorted(Path(root).rglob("*.parquet")) if root else \
-        sorted(Path().glob(pattern))
-    if not files:
-        raise SystemExit(f"no parquet shards matched {pattern}")
-
-    frames, failed = [], []
-    for f in files:
-        try:
-            df = pl.read_parquet(f)
-        except Exception as exc:
-            failed.append((f, exc))
-            continue
-        casts = [pl.col(c).cast(pl.Utf8).alias(c)
-                 for c in DRIFTING if c in df.columns]
-        if casts:
-            df = df.with_columns(casts)
-        frames.append(df)
-
-    if failed:
-        print(f"  !! {len(failed)} shard(s) unreadable, e.g. {failed[0][0]}: "
-              f"{failed[0][1]}")
-        raise SystemExit("refusing to tag a partial shot set — fix or remove them.")
-
-    out = pl.concat(frames, how="diagonal_relaxed")
-    print(f"  read {len(files):,} shard(s) -> {out.height:,} rows")
-    return out
-
 
 def parse_flag(v) -> bool:
     """
@@ -226,16 +186,9 @@ def main() -> None:
     ignore = not a.use_situation_flags
     print(f"situation flags: {'IGNORED (four location buckets)' if ignore else 'ACTIVE (biased)'}")
 
-    shots = read_shots(a.shots)
+    shots = pl.read_parquet(a.shots)
     pbp = pl.read_parquet(a.pbp)
     print(f"read {shots.height:,} Points-feed rows, {pbp.height:,} PBP rows")
-
-    s_shots = sorted(shots["Season"].unique().to_list())
-    s_pbp = sorted(pbp["Season"].unique().to_list())
-    only_shots = [s for s in s_shots if s not in s_pbp]
-    if only_shots:
-        print(f"  !! seasons with shots but NO PBP: {only_shots} — every shot in "
-              f"those seasons will fail the join and be dropped.")
 
     out, d = tag(shots, pbp, ignore_situation=ignore)
     Path(a.out).parent.mkdir(parents=True, exist_ok=True)
