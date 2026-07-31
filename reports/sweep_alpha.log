@@ -1,0 +1,48 @@
+train games from 53,236 stints; hold-out from 14,067
+
+fitting alpha=100 ...
+  alpha=     100  players= 677  sd(RAPM)=4.295  RMSE=12.984  corr=+0.131  slope=1.039
+
+fitting alpha=316 ...
+  alpha=     316  players= 677  sd(RAPM)=2.918  RMSE=12.615  corr=+0.154  slope=1.127
+
+fitting alpha=1000 ...
+  alpha=    1000  players= 677  sd(RAPM)=1.820  RMSE=12.265  corr=+0.191  slope=1.284
+
+fitting alpha=3162 ...
+  alpha=    3162  players= 677  sd(RAPM)=1.021  RMSE=12.009  corr=+0.226  slope=1.568
+
+fitting alpha=10000 ...
+  alpha=   10000  players= 677  sd(RAPM)=0.512  RMSE=11.882  corr=+0.246  slope=2.186
+
+fitting alpha=31620 ...
+  alpha=   31620  players= 677  sd(RAPM)=0.226  RMSE=11.840  corr=+0.252  slope=3.877
+
+==========================================================================
+OUT-OF-SAMPLE GAME PREDICTION BY REGULARISATION STRENGTH
+==========================================================================
+shape: (6, 8)
+┌─────────┬──────────┬───────────┬─────────────┬──────────┬──────────┬──────────┬─────────┐
+│ alpha   ┆ rapm_sd  ┆ rmse      ┆ improvement ┆ corr     ┆ hit      ┆ slope    ┆ players │
+│ ---     ┆ ---      ┆ ---       ┆ ---         ┆ ---      ┆ ---      ┆ ---      ┆ ---     │
+│ f64     ┆ f64      ┆ f64       ┆ f64         ┆ f64      ┆ f64      ┆ f64      ┆ i64     │
+╞═════════╪══════════╪═══════════╪═════════════╪══════════╪══════════╪══════════╪═════════╡
+│ 31620.0 ┆ 0.226145 ┆ 11.840094 ┆ 3.151481    ┆ 0.252449 ┆ 0.619403 ┆ 3.877228 ┆ 677     │
+│ 10000.0 ┆ 0.512475 ┆ 11.882036 ┆ 2.808411    ┆ 0.245795 ┆ 0.636816 ┆ 2.186471 ┆ 677     │
+│ 3162.0  ┆ 1.021335 ┆ 12.009461 ┆ 1.766111    ┆ 0.225817 ┆ 0.631841 ┆ 1.567976 ┆ 677     │
+│ 1000.0  ┆ 1.820028 ┆ 12.264867 ┆ -0.32304    ┆ 0.190585 ┆ 0.634328 ┆ 1.28399  ┆ 677     │
+│ 316.0   ┆ 2.917526 ┆ 12.61542  ┆ -3.190463   ┆ 0.154425 ┆ 0.614428 ┆ 1.127137 ┆ 677     │
+│ 100.0   ┆ 4.295277 ┆ 12.983529 ┆ -6.201487   ┆ 0.130737 ┆ 0.587065 ┆ 1.03861  ┆ 677     │
+└─────────┴──────────┴───────────┴─────────────┴──────────┴──────────┴──────────┴─────────┘
+
+best out-of-sample alpha: 31620 (RMSE 11.840, slope 3.877)
+  Compare against the cross-validated value used in Chapter 4.
+  A best-predicting alpha well below the CV-selected one means the
+  penalty is tuned for fit rather than forecast — report the
+  distinction rather than silently adopting the better number, and
+  keep the CV value for the published ratings unless there is a
+  principled reason to prefer predictive calibration.
+
+  alpha values whose slope is near 1.0 (well-calibrated): [316.0, 100.0]
+
+wrote reports/sweep_alpha_holdout.json

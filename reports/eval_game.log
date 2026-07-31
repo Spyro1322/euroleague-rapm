@@ -1,0 +1,94 @@
+train 2020-2024   hold-out 2025-2025
+  pir: 453 rated players
+  win_score: 453 rated players
+  rapm: 677 rated players
+  shotctx: 677 rated players
+
+per-arm mean share of hold-out player-slots carrying a rating:
+  pir        0.733
+  win_score  0.733
+  rapm       0.769
+  shotctx    0.769
+
+======================================================================
+TEST 1 — ALL HOLD-OUT GAMES (unrated players treated as league-average)
+======================================================================
+games: 1,616 train, 402 hold-out
+
+naive (home advantage +3.77 pts): RMSE 12.225  winner 63.4%
+
+[pir]  intercept +3.70  slope +2.697
+  RMSE 11.910 (+2.58% vs naive)   corr +0.268   winner 63.4%   R2 +0.0505
+  note: slope 2.70 rather than 1.0 — the ratings are under-dispersed relative to what best predicts out of sample, i.e. the regularisation is too strong for prediction.
+
+[win_score]  intercept +3.72  slope +3.195
+  RMSE 11.604 (+5.08% vs naive)   corr +0.322   winner 65.4%   R2 +0.0987
+  note: slope 3.19 rather than 1.0 — the ratings are under-dispersed relative to what best predicts out of sample, i.e. the regularisation is too strong for prediction.
+
+[rapm]  intercept +3.72  slope +1.568
+  RMSE 12.009 (+1.77% vs naive)   corr +0.226   winner 63.2%   R2 +0.0346
+  note: slope 1.57 rather than 1.0 — the ratings are under-dispersed relative to what best predicts out of sample, i.e. the regularisation is too strong for prediction.
+
+[shotctx]  intercept +3.73  slope +1.432
+  RMSE 12.064 (+1.32% vs naive)   corr +0.216   winner 64.4%   R2 +0.0258
+  note: slope 1.43 rather than 1.0 — the ratings are under-dispersed relative to what best predicts out of sample, i.e. the regularisation is too strong for prediction.
+
+shape: (5, 7)
+┌───────────┬───────────┬─────────────┬──────────┬──────────┬──────────┬──────────┐
+│ arm       ┆ rmse      ┆ improvement ┆ corr     ┆ hit      ┆ r2       ┆ slope    │
+│ ---       ┆ ---       ┆ ---         ┆ ---      ┆ ---      ┆ ---      ┆ ---      │
+│ str       ┆ f64       ┆ f64         ┆ f64      ┆ f64      ┆ f64      ┆ f64      │
+╞═══════════╪═══════════╪═════════════╪══════════╪══════════╪══════════╪══════════╡
+│ win_score ┆ 11.603929 ┆ 5.083238    ┆ 0.321945 ┆ 0.654229 ┆ 0.098656 ┆ 3.194668 │
+│ pir       ┆ 11.909613 ┆ 2.582835    ┆ 0.268303 ┆ 0.634328 ┆ 0.050542 ┆ 2.697157 │
+│ rapm      ┆ 12.009445 ┆ 1.766241    ┆ 0.225819 ┆ 0.631841 ┆ 0.034558 ┆ 1.568008 │
+│ shotctx   ┆ 12.063803 ┆ 1.321606    ┆ 0.216323 ┆ 0.644279 ┆ 0.025798 ┆ 1.432187 │
+│ naive     ┆ 12.225374 ┆ 0.0         ┆ NaN      ┆ 0.634328 ┆ 0.0      ┆ null     │
+└───────────┴───────────┴─────────────┴──────────┴──────────┴──────────┴──────────┘
+
+======================================================================
+TEST 2 — COMMON SUPPORT (games where every arm rates >= 85% of slots)
+======================================================================
+games: 1,610 train, 73 hold-out
+
+naive (home advantage +3.72 pts): RMSE 12.837  winner 67.1%
+
+[pir]  intercept +3.67  slope +2.661
+  RMSE 11.632 (+9.39% vs naive)   corr +0.424   winner 67.1%   R2 +0.1789
+  note: slope 2.66 rather than 1.0 — the ratings are under-dispersed relative to what best predicts out of sample, i.e. the regularisation is too strong for prediction.
+
+[win_score]  intercept +3.68  slope +3.151
+  RMSE 11.456 (+10.76% vs naive)   corr +0.452   winner 65.8%   R2 +0.2035
+  note: slope 3.15 rather than 1.0 — the ratings are under-dispersed relative to what best predicts out of sample, i.e. the regularisation is too strong for prediction.
+
+[rapm]  intercept +3.69  slope +1.548
+  RMSE 13.055 (-1.69% vs naive)   corr +0.122   winner 65.8%   R2 -0.0343
+  note: slope 1.55 rather than 1.0 — the ratings are under-dispersed relative to what best predicts out of sample, i.e. the regularisation is too strong for prediction.
+
+[shotctx]  intercept +3.70  slope +1.416
+  RMSE 13.070 (-1.81% vs naive)   corr +0.082   winner 58.9%   R2 -0.0366
+  note: slope 1.42 rather than 1.0 — the ratings are under-dispersed relative to what best predicts out of sample, i.e. the regularisation is too strong for prediction.
+
+shape: (5, 7)
+┌───────────┬───────────┬─────────────┬──────────┬──────────┬───────────┬──────────┐
+│ arm       ┆ rmse      ┆ improvement ┆ corr     ┆ hit      ┆ r2        ┆ slope    │
+│ ---       ┆ ---       ┆ ---         ┆ ---      ┆ ---      ┆ ---       ┆ ---      │
+│ str       ┆ f64       ┆ f64         ┆ f64      ┆ f64      ┆ f64       ┆ f64      │
+╞═══════════╪═══════════╪═════════════╪══════════╪══════════╪═══════════╪══════════╡
+│ win_score ┆ 11.456006 ┆ 10.760138   ┆ 0.451709 ┆ 0.657534 ┆ 0.203523  ┆ 3.150571 │
+│ pir       ┆ 11.632046 ┆ 9.388825    ┆ 0.423558 ┆ 0.671233 ┆ 0.178857  ┆ 2.661434 │
+│ naive     ┆ 12.83732  ┆ 0.0         ┆ NaN      ┆ 0.671233 ┆ 0.0       ┆ null     │
+│ rapm      ┆ 13.054664 ┆ -1.693061   ┆ 0.122451 ┆ 0.657534 ┆ -0.03428  ┆ 1.547719 │
+│ shotctx   ┆ 13.06957  ┆ -1.809178   ┆ 0.082431 ┆ 0.589041 ┆ -0.036643 ┆ 1.416022 │
+└───────────┴───────────┴─────────────┴──────────┴──────────┴───────────┴──────────┘
+
+wrote reports/eval_game.json
+
+NOTE ON COVERAGE
+  The RAPM arm is limited to the players in its published leaderboard,
+  which applies a possession floor. The floor exists for display, not
+  for evaluation, and it caps this arm's coverage below the box-score
+  arms'. To remove the handicap, refit with the floors disabled and
+  point --rapm-stem at that output:
+    python3 scripts/fit_ridge_rapm.py --prefix rapm_eval --alpha <a> \
+        --min-poss 0 --min-games 0 --bootstrap 0 --out rapm_eval_full

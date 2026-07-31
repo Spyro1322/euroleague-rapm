@@ -4,30 +4,30 @@
   "buckets": [
     {
       "bucket": "above_break_three",
-      "alpha": 10000.0,
+      "alpha": 3162.0,
       "league_mean": 105.58883840617587,
-      "signal": 0.09811959539935113,
+      "signal": 0.09811941710668426,
       "verdict": "NONE"
     },
     {
       "bucket": "at_rim",
       "alpha": 3162.0,
       "league_mean": 131.72061232559454,
-      "signal": 0.4784121918805184,
+      "signal": 0.47841182942432375,
       "verdict": "STRONG"
     },
     {
       "bucket": "corner_three",
-      "alpha": 1000.0,
+      "alpha": 3162.0,
       "league_mean": 125.58385476337358,
-      "signal": 0.04351039215794586,
+      "signal": 0.04351044410958457,
       "verdict": "NONE"
     },
     {
       "bucket": "mid_range",
       "alpha": 3162.0,
       "league_mean": 80.40978387084691,
-      "signal": 0.336993025966457,
+      "signal": 0.33699273213627995,
       "verdict": "STRONG"
     }
   ],

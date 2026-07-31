@@ -1,0 +1,92 @@
+train 2020-2024   hold-out 2025-2025
+stints: 53,236 train, 14,067 hold-out
+
+loading arms:
+  pir
+  win_score
+  rapm
+    convention check: max |ORAPM + DRAPM - RAPM| = 0.0000
+  shotctx
+    context shares: at_rim=0.335, mid_range=0.260, corner_three=0.056, above_break_three=0.349
+
+naive (training mean +5.03):  RMSE 125.873   MAE 89.918
+
+[pir]
+  player coverage: train 0.974  hold-out 0.724
+  frozen scaling: intercept +4.937, slope +2.8492
+  rate scale : RMSE 125.816  MAE 90.202  R2 +0.0009  vs naive +0.05%
+  margin scale: RMSE 2.670 points/stint  vs naive -0.05%
+  (refit on hold-out would give RMSE 125.776 — the gap is the cost of honest prediction)
+  !! only 72.4% of hold-out player-slots have a rating; unrated players are treated as league-average, which flatters this arm by shrinking its predictions toward the mean.
+
+[win_score]
+  player coverage: train 0.974  hold-out 0.724
+  frozen scaling: intercept +4.966, slope +3.1125
+  rate scale : RMSE 125.735  MAE 90.035  R2 +0.0022  vs naive +0.11%
+  margin scale: RMSE 2.666 points/stint  vs naive +0.08%
+  (refit on hold-out would give RMSE 125.728 — the gap is the cost of honest prediction)
+  !! only 72.4% of hold-out player-slots have a rating; unrated players are treated as league-average, which flatters this arm by shrinking its predictions toward the mean.
+
+[rapm]
+  player coverage: train 0.988  hold-out 0.736
+  frozen scaling: intercept +4.958, slope +1.9924
+  rate scale : RMSE 125.803  MAE 90.137  R2 +0.0011  vs naive +0.06%
+  margin scale: RMSE 2.669 points/stint  vs naive -0.02%
+  (refit on hold-out would give RMSE 125.753 — the gap is the cost of honest prediction)
+  !! only 73.6% of hold-out player-slots have a rating; unrated players are treated as league-average, which flatters this arm by shrinking its predictions toward the mean.
+
+[shotctx]
+  player coverage: train 1.000  hold-out 0.763
+  frozen scaling: intercept +4.972, slope +1.8320
+  rate scale : RMSE 125.828  MAE 90.168  R2 +0.0007  vs naive +0.04%
+  margin scale: RMSE 2.669 points/stint  vs naive -0.04%
+  (refit on hold-out would give RMSE 125.763 — the gap is the cost of honest prediction)
+  !! only 76.3% of hold-out player-slots have a rating; unrated players are treated as league-average, which flatters this arm by shrinking its predictions toward the mean.
+
+==================================================================
+STINT DIFFERENTIAL, HOLD-OUT (lower RMSE is better)
+==================================================================
+shape: (5, 7)
+┌───────────┬────────────┬─────────────┬──────────┬─────────────────┬──────────┬──────────┐
+│ arm       ┆ rmse       ┆ improvement ┆ rmse_pts ┆ improvement_pts ┆ r2       ┆ coverage │
+│ ---       ┆ ---        ┆ ---         ┆ ---      ┆ ---             ┆ ---      ┆ ---      │
+│ str       ┆ f64        ┆ f64         ┆ f64      ┆ f64             ┆ f64      ┆ f64      │
+╞═══════════╪════════════╪═════════════╪══════════╪═════════════════╪══════════╪══════════╡
+│ win_score ┆ 125.734688 ┆ 0.109708    ┆ 2.665985 ┆ 0.07906         ┆ 0.002175 ┆ 0.724312 │
+│ rapm      ┆ 125.802861 ┆ 0.055548    ┆ 2.668582 ┆ -0.018286       ┆ 0.001092 ┆ 0.735715 │
+│ pir       ┆ 125.815709 ┆ 0.045341    ┆ 2.669524 ┆ -0.053608       ┆ 0.000888 ┆ 0.724312 │
+│ shotctx   ┆ 125.827766 ┆ 0.035762    ┆ 2.669149 ┆ -0.039555       ┆ 0.000697 ┆ 0.762636 │
+│ naive     ┆ 125.872781 ┆ 0.0         ┆ null     ┆ null            ┆ 0.0      ┆ 1.0      │
+└───────────┴────────────┴─────────────┴──────────┴─────────────────┴──────────┴──────────┘
+
+==================================================================
+SECONDARY: TEAM-GAME MARGIN
+==================================================================
+  aggregating stint predictions to game level for the leading arm (win_score)
+  games: 402
+  corr(predicted, actual game margin) = +0.318
+  winner correctly identified in 64.4% of games
+  (a coin flip is 50%; home advantage alone typically reaches ~60%)
+
+calibration by predicted decile (win_score):
+shape: (10, 4)
+┌────────┬───────────┬───────────┬────────┐
+│ decile ┆ pred      ┆ actual    ┆ poss   │
+│ ---    ┆ ---       ┆ ---       ┆ ---    │
+│ i64    ┆ f64       ┆ f64       ┆ f64    │
+╞════════╪═══════════╪═══════════╪════════╡
+│ 1      ┆ -7.409747 ┆ -5.718702 ┆ 3235.0 │
+│ 2      ┆ -2.684338 ┆ -2.57815  ┆ 3103.0 │
+│ 3      ┆ -0.064291 ┆ 0.191571  ┆ 3132.0 │
+│ 4      ┆ 2.139946  ┆ 3.787167  ┆ 3195.0 │
+│ 5      ┆ 4.077797  ┆ 1.259321  ┆ 3017.5 │
+│ 6      ┆ 5.915192  ┆ 5.93317   ┆ 3067.5 │
+│ 7      ┆ 7.707823  ┆ 8.921196  ┆ 3026.5 │
+│ 8      ┆ 9.656748  ┆ 5.329867  ┆ 3077.0 │
+│ 9      ┆ 12.221923 ┆ 14.406644 ┆ 3130.5 │
+│ 10     ┆ 17.457265 ┆ 13.040901 ┆ 3374.0 │
+└────────┴───────────┴───────────┴────────┘
+  A well-calibrated rating has actual tracking predicted down the column.
+  Systematic flattening means the ratings are over-dispersed.
+
+wrote reports/eval_holdout.json and warehouse/eval_holdout_results.parquet

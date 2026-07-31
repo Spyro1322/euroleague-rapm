@@ -1,0 +1,35 @@
+boxscore rows 2007-2025: 139,246
+
+PIR verification (recomputed vs the feed's Valuation column):
+  rows compared: 117,089   disagreements: 0 (0.000%)
+  >>> exact agreement — the recomputed formula matches the competition's published definition.
+
+player-seasons with >= 200 minutes: 3,764
+
+per-season summary:
+shape: (19, 5)
+┌────────┬─────────┬────────────┬──────────┬───────────┐
+│ Season ┆ players ┆ pir40_mean ┆ pir40_sd ┆ ws40_mean │
+│ ---    ┆ ---     ┆ ---        ┆ ---      ┆ ---       │
+│ i64    ┆ u32     ┆ f64        ┆ f64      ┆ f64       │
+╞════════╪═════════╪════════════╪══════════╪═══════════╡
+│ 2007   ┆ 201     ┆ 15.95      ┆ 5.58     ┆ 6.24      │
+│ 2008   ┆ 176     ┆ 15.76      ┆ 5.55     ┆ 6.08      │
+│ 2009   ┆ 176     ┆ 15.43      ┆ 5.78     ┆ 5.85      │
+│ 2010   ┆ 183     ┆ 15.3       ┆ 5.32     ┆ 5.69      │
+│ 2011   ┆ 178     ┆ 15.48      ┆ 5.18     ┆ 5.74      │
+│ …      ┆ …       ┆ …          ┆ …        ┆ …         │
+│ 2021   ┆ 209     ┆ 15.38      ┆ 6.09     ┆ 6.17      │
+│ 2022   ┆ 218     ┆ 16.41      ┆ 5.38     ┆ 6.61      │
+│ 2023   ┆ 218     ┆ 16.62      ┆ 5.59     ┆ 6.94      │
+│ 2024   ┆ 217     ┆ 17.13      ┆ 6.05     ┆ 7.11      │
+│ 2025   ┆ 248     ┆ 17.8       ┆ 5.84     ┆ 7.38      │
+└────────┴─────────┴────────────┴──────────┴───────────┘
+
+corr(PIR/40, WinScore/40) = 0.807
+
+wrote warehouse/eval_boxscore_metrics.parquet  (3,764 player-seasons)
+
+columns: Season, Player_ID, name, games, minutes, pir_per40, ws_per40, pm_per40 (+ _z standardised within season)
+
+next: evaluate_holdout.py — aggregate these to 2025-26 lineups and compare against RAPM on out-of-sample stint outcomes.
