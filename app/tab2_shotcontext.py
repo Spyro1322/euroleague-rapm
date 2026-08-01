@@ -31,6 +31,19 @@ the thinnest bucket produces the most dramatic spoke. So this tab:
     reader to eyeball distances
   - states the identifiability limit in the open while the data still shows it
 Presenting per-bucket rankings without these would overstate what the model knows.
+
+THREE VERDICT TIERS, THREE VISUAL TREATMENTS (added after the pinning fix in
+assess_identifiability.py)
+verdict is now one of STRONG / WEAK / NONE, published from a pinned table so it
+can't flip on a noisy re-fit (see assess_identifiability.py). Previously this
+file only checked `verdict != "NONE"`, which meant STRONG and WEAK rendered
+identically -- fine while no bucket was ever actually WEAK, but a latent gap:
+if a bucket ever legitimately moved into the WEAK band, it would have shown up
+as an ordinary, uncaveated spoke, indistinguishable from at_rim. WEAK now gets
+its own marker treatment and its own footnote so that can't happen silently.
+  - NONE   -> pinned to the prior, hollow grey marker, single dagger (†)
+  - WEAK   -> fitted value shown, muted gold diamond marker, double dagger (‡)
+  - STRONG -> fitted value shown, full colour, solid marker, no mark
 """
 
 import pandas as pd
@@ -51,6 +64,8 @@ WINDOW_LABELS = {
 }
 PALETTE = {("off", 1): "#1f77b4", ("def", 1): "#d62728",
            ("off", 2): "#2ca02c", ("def", 2): "#ff7f0e"}
+WEAK_COLOR = "#C99A3D"
+NONE_COLOR = "#9A9A9A"
 
 
 @st.cache_data(show_spinner=False)
@@ -60,39 +75,34 @@ def load_shotctx(warehouse_dir: str, window: str) -> pd.DataFrame:
     return df
 
 
-# @st.cache_data(show_spinner=False)
-# def identifiability(df: pd.DataFrame) -> float:
-#     """corr(median support, deviation sd) across buckets. Strongly negative = noise."""
-#     g = (df[df["end"] == "off"].groupby("bucket", observed=True)
-#          .agg(sup=("support", "median"), dev=("deviation", "std")).dropna())
-#     if len(g) < 3 or g["sup"].std() == 0 or g["dev"].std() == 0:
-#         return float("nan")
-#     return float(np.corrcoef(g["sup"], g["dev"])[0, 1])
-
-
 def _frame(df: pd.DataFrame, player_id: str, end: str) -> pd.DataFrame:
     sub = df[(df["player_id"] == player_id) & (df["end"] == end)].copy()
     sub = sub.set_index("bucket").reindex(BUCKETS).reset_index()
-    # Two independent gates, kept separate because they mean different things:
-    #   identified — is this bucket estimable AT ALL? (bucket-level)
-    #   reliable   — does THIS player have enough on-court exposure? (player-level)
-    # A bucket that fails the first must never render, whatever the second says.
-    sub["identified"] = (sub["verdict"].ne("NONE")
-                         if "verdict" in sub.columns else True)
+    # Three gates, kept separate because they mean different things:
+    #   identified — is this bucket estimable AT ALL? (bucket-level, != NONE)
+    #   weak       — estimable, but only weakly so (bucket-level, == WEAK)
+    #   enough     — does THIS player have enough on-court exposure? (player-level)
+    # A bucket that fails "identified" must never render its fitted value,
+    # whatever "enough" says.
+    has_verdict = "verdict" in sub.columns
+    sub["identified"] = sub["verdict"].ne("NONE") if has_verdict else True
+    sub["weak"] = sub["verdict"].eq("WEAK") if has_verdict else False
     sub["enough"] = sub["reliable"].fillna(False)
     sub["shown"] = sub["enough"] & sub["identified"]
 
-    # Three states, three visual treatments:
-    #   shown            -> the fitted value, solid marker
-    #   not identified   -> PINNED TO THE PRIOR, hollow grey marker. For a bucket
-    #                       with no measurable signal the model's best estimate
-    #                       genuinely IS the player's overall rating, so drawing
-    #                       it on the ring is the honest representation and makes
-    #                       the flatness of those axes the visible finding.
-    #                       Plotting the fitted noise instead would invent an
-    #                       effect; leaving a gap would hide the asymmetry.
-    #   identified but thin -> GAP. A different claim: not "no effect exists" but
-    #                       "not enough exposure for this player to say".
+    # Three render states, three visual treatments:
+    #   shown, STRONG    -> the fitted value, solid full-colour marker
+    #   shown, WEAK      -> the fitted value, muted gold marker + caveat
+    #   not identified   -> PINNED TO THE PRIOR, hollow grey marker. For a
+    #                       bucket with no measurable signal the model's best
+    #                       estimate genuinely IS the player's overall rating,
+    #                       so drawing it on the ring is the honest
+    #                       representation and makes the flatness of those
+    #                       axes the visible finding. Plotting the fitted
+    #                       noise instead would invent an effect; leaving a
+    #                       gap would hide the asymmetry.
+    #   identified but thin -> GAP. A different claim: not "no effect exists"
+    #                       but "not enough exposure for this player to say".
     sub["plot_value"] = sub["value"].where(sub["shown"])
     pin = (~sub["identified"]) & sub["prior"].notna()
     sub.loc[pin, "plot_value"] = sub.loc[pin, "prior"]
@@ -100,10 +110,16 @@ def _frame(df: pd.DataFrame, player_id: str, end: str) -> pd.DataFrame:
     return sub
 
 
-def _radar(frames, rings, title, unidentified=()):
+def _radar(frames, rings, title, unidentified=(), weak_buckets=()):
     fig = go.Figure()
-    thetas = [BUCKET_LABELS[b] + (" \u2020" if b in unidentified else "")
-              for b in BUCKETS]
+    thetas = []
+    for b in BUCKETS:
+        label = BUCKET_LABELS[b]
+        if b in unidentified:
+            label += " \u2020"
+        elif b in weak_buckets:
+            label += " \u2021"
+        thetas.append(label)
 
     for label, (val, color) in rings.items():
         fig.add_trace(go.Scatterpolar(
@@ -115,11 +131,22 @@ def _radar(frames, rings, title, unidentified=()):
     for f, label, color, dash in frames:
         vals = f["plot_value"].tolist()
         pinned = f["pinned"].tolist()
-        m_color = ["#9A9A9A" if p else color for p in pinned]
-        m_symbol = ["circle-open" if p else "circle" for p in pinned]
-        m_size = [7 if p else 9 for p in pinned]
-        status = ["not identified — shown at overall rating" if p
-                  else "fitted" for p in pinned]
+        weak = f["weak"].tolist() if "weak" in f.columns else [False] * len(vals)
+
+        m_color = ["#9A9A9A" if p else (WEAK_COLOR if w else color)
+                   for p, w in zip(pinned, weak)]
+        m_symbol = ["circle-open" if p else ("diamond" if w else "circle")
+                    for p, w in zip(pinned, weak)]
+        m_size = [7 if (p or w) else 9 for p, w in zip(pinned, weak)]
+        status = []
+        for p, w in zip(pinned, weak):
+            if p:
+                status.append("not identified — shown at overall rating")
+            elif w:
+                status.append("weak evidence — treat cautiously")
+            else:
+                status.append("fitted")
+
         fig.add_trace(go.Scatterpolar(
             r=vals + [vals[0]], theta=thetas + [thetas[0]],
             name=label, mode="lines+markers",
@@ -137,16 +164,26 @@ def _radar(frames, rings, title, unidentified=()):
     allv += [v for v, _ in rings.values()]
     lim = max(2.0, max(abs(v) for v in allv) * 1.2) if allv else 2.0
 
+    bottom = 70
     if unidentified:
         fig.add_annotation(
             text="\u2020 no measurable player effect in this context — "
                  "drawn on the overall-rating ring",
             xref="paper", yref="paper", x=0.5, y=-0.08, showarrow=False,
             font=dict(size=11, color="#7A7A7A"))
+        bottom += 18
+    if weak_buckets:
+        fig.add_annotation(
+            text="\u2021 weak evidence of a real effect — shown, but treat "
+                 "the estimate cautiously, not as a confident ranking",
+            xref="paper", yref="paper", x=0.5,
+            y=-0.08 - (0.06 if unidentified else 0), showarrow=False,
+            font=dict(size=11, color="#8A6D1F"))
+        bottom += 18
 
     fig.update_layout(
         title=title, height=520, showlegend=True,
-        margin=dict(l=60, r=60, t=60, b=70),
+        margin=dict(l=60, r=60, t=60, b=bottom),
         polar=dict(radialaxis=dict(visible=True, range=[-lim, lim],
                                    tickformat="+.1f"),
                    angularaxis=dict(direction="clockwise")))
@@ -163,7 +200,9 @@ def _deviation_chart(frames):
         # its fitted-minus-prior here would contradict the radar, which shows it on
         # the ring, and would present noise as an effect.
         dev = dev.mask(f["pinned"], 0.0)
-        cols = ["#C8C8C8" if p else color for p in f["pinned"]]
+        weak = f["weak"].tolist() if "weak" in f.columns else [False] * len(f)
+        cols = ["#C8C8C8" if p else (WEAK_COLOR if w else color)
+                for p, w in zip(f["pinned"], weak)]
         fig.add_trace(go.Bar(x=labels, y=dev.tolist(), name=label,
                              marker_color=cols,
                              hovertemplate="%{x}: %{y:+.2f} vs overall"
@@ -196,19 +235,28 @@ def render(warehouse_dir: str):
         vb = (df.groupby("bucket", observed=True)
                 .agg(verdict=("verdict", "first"), signal=("signal", "first")))
         strong = [BUCKET_LABELS[b] for b in BUCKETS
-                  if b in vb.index and vb.loc[b, "verdict"] != "NONE"]
+                  if b in vb.index and vb.loc[b, "verdict"] == "STRONG"]
+        weak_b = [BUCKET_LABELS[b] for b in BUCKETS
+                  if b in vb.index and vb.loc[b, "verdict"] == "WEAK"]
         none_ = [BUCKET_LABELS[b] for b in BUCKETS
                  if b in vb.index and vb.loc[b, "verdict"] == "NONE"]
         if none_:
             st.info(
                 f"**{' and '.join(none_)} are not shown.** Player impact is "
-                f"measurably identifiable for {' and '.join(strong)}, but not for "
-                f"{' or '.join(none_)}: those estimates show no correlation with a "
-                f"player's overall rating, i.e. no evidence of a repeatable "
+                f"measurably identifiable for {' and '.join(strong) or 'no other bucket'}, "
+                f"but not for {' or '.join(none_)}: those estimates show no correlation "
+                f"with a player's overall rating, i.e. no evidence of a repeatable "
                 f"individual effect. Three-point outcomes being largely "
                 f"non-repeatable at lineup level is a known result, and this model "
                 f"reproduces it. The axes remain on the chart so the asymmetry is "
                 f"visible rather than hidden.")
+        if weak_b:
+            st.info(
+                f"**{' and '.join(weak_b)}** shows weak evidence of a real effect — "
+                f"close to, but on the identifiable side of, the threshold used for "
+                f"{' or '.join(none_) if none_ else 'the suppressed bucket(s)'}. "
+                f"The estimate is shown, marked with \u2021, but should be read as a "
+                f"tentative signal rather than a confident ranking.")
 
     st.caption(
         "Each spoke is the player's estimated impact on possessions ending in that "
@@ -265,10 +313,11 @@ def render(warehouse_dir: str):
         st.warning("Nothing to plot for this selection.")
         return
 
-    unident = {b for b in BUCKETS
-               if not bool(frames[0][0].set_index("bucket").loc[b, "identified"])}
+    ref = frames[0][0].set_index("bucket")
+    unident = {b for b in BUCKETS if not bool(ref.loc[b, "identified"])}
+    weak_set = {b for b in BUCKETS if bool(ref.loc[b, "weak"])}
     st.plotly_chart(_radar(frames, rings, "Shot-context impact (pts / 100)",
-                           unidentified=unident),
+                           unidentified=unident, weak_buckets=weak_set),
                     width='stretch')
     st.plotly_chart(_deviation_chart(frames), width='stretch')
 
@@ -303,6 +352,11 @@ def render(warehouse_dir: str):
             "- **Thin buckets shrink hardest.** A spoke near the ring is weak "
             "evidence of no effect, not strong evidence of it. Check the on-court "
             "attempt counts before reading a null.\n"
+            "- **\u2020 marks a bucket with no measurable individual effect** — "
+            "pinned to the overall-rating ring rather than plotted at its fitted "
+            "(noise) value.\n"
+            "- **\u2021 marks a bucket with weak evidence of an effect** — shown, "
+            "but close to the identifiability threshold; treat as tentative.\n"
             "- **Scope:** buckets cover possessions ending in a field-goal attempt. "
             "Turnovers and free-throw-only possessions are excluded here and remain "
             "in the overall rating.\n"

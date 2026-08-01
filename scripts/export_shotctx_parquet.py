@@ -41,6 +41,19 @@ Two-point buckets measure shot creation and rim protection, which are repeatable
 on-court skills. Three-point buckets measure three-point outcomes, which largely
 are not repeatable at lineup level -- a known plus-minus result, reproduced here.
 
+The verdict rule and the pin table now live in scripts/identifiability_pins.py
+and are imported, NOT re-implemented here. This script used to recompute the
+same thresholds inline. Because the deployment mirror ships parquet only and
+never sees reports/, that inline copy -- not assess_identifiability.py -- was
+what actually decided which spokes Tab 2 renders. Two independent copies of a
+rule that must agree is a latent bug; there is now one copy.
+
+above_break_three peaks at 0.098 against a WEAK cutoff of 0.10, so an unpinned
+recompute could flip it to a rendered spoke on noise alone. The published
+verdict comes from the pin; the live recompute is still carried in the parquet
+as `verdict_live` and in the export JSON, and a disagreement prints a warning
+rather than quietly changing the dashboard.
+
 OUTPUT  warehouse/shotctx_{window}.parquet, one row per player x bucket x end
     player_id, name, poss   identity + overall exposure
     bucket, end             'off' | 'def'
@@ -50,6 +63,10 @@ OUTPUT  warehouse/shotctx_{window}.parquet, one row per player x bucket x end
                             nothing beyond the player's overall level.
     support                 bucket attempts while on court
     reliable                support >= min_support
+    signal                  |corr| with overall RAPM, the identifiability measure
+    verdict                 PUBLISHED verdict (pinned) — what Tab 2 renders on
+    verdict_live            verdict the raw signal implies on THIS run; differs
+                            from `verdict` only when a pin is overriding drift
     league_mean             that bucket's league average pts/100
     alpha                   the fit's regularisation strength
 """
@@ -61,9 +78,11 @@ from pathlib import Path
 import numpy as np
 import polars as pl
 
+from identifiability_pins import (BUCKETS, borderline, drift_banner,
+                                  published, sign_check, sign_note)
+
 W = Path("warehouse")
 R = Path("reports")
-BUCKETS = ["at_rim", "mid_range", "corner_three", "above_break_three"]
 
 
 def main():
@@ -100,7 +119,7 @@ def main():
     print(f"  leaderboard: {lb_stem}.parquet ({lb.height} players)")
     lb_small = lb.select(["player_id", "name", "poss", "ORAPM", "DRAPM"])
 
-    records, fit_summary = [], []
+    records, fit_summary, drift = [], [], {}
     for bucket in found:
         f = np.load(W / f"{prefix}_{bucket}_fit.npz", allow_pickle=True)
         d = np.load(W / f"{prefix}_{bucket}_design.npz", allow_pickle=True)
@@ -126,9 +145,27 @@ def main():
                         c_def = float(rr.get("corr_def", float("nan")))
         sig = max(abs(c_off) if c_off == c_off else 0.0,
                   abs(c_def) if c_def == c_def else 0.0)
-        verdict = "STRONG" if sig >= 0.25 else ("WEAK" if sig >= 0.10 else "NONE")
+
+        # Verdict rule + pin table imported, never re-implemented here. See the
+        # docstring: this is the copy that governs the dashboard.
+        verdict, verdict_live, drifted = published(bucket, sig)
+        if drifted:
+            drift[bucket] = dict(live=verdict_live, pinned=verdict, signal=sig)
+        margin = borderline(sig)
+        if margin is not None:
+            print(f"  NOTE: {bucket} signal {sig:.3f} is {margin:.3f} from a "
+                  f"verdict threshold — borderline, pin is load-bearing.")
+        sc = sign_check(c_off, c_def)
+        sn = sign_note(c_off, c_def)
+        if sn:
+            print(f"  NOTE: {bucket} {sn}")
+
         fit_summary.append(dict(bucket=bucket, alpha=alpha, league_mean=ybar,
-                                signal=sig, verdict=verdict))
+                                signal=sig, verdict=verdict,
+                                verdict_live=verdict_live, pinned=drifted,
+                                corr_off=c_off, corr_def=c_def,
+                                signal_driver=sc["driver"],
+                                correct_sign=sc["correct_sign"]))
 
         for pid, c in zip(pids, pcols):
             c = int(c)
@@ -141,7 +178,7 @@ def main():
                     prior=float(sign * mu[idx]),
                     support=float(support[idx]),
                     league_mean=ybar, alpha=alpha,
-                    signal=sig, verdict=verdict,
+                    signal=sig, verdict=verdict, verdict_live=verdict_live,
                 ))
 
     df = pl.DataFrame(records).with_columns(
@@ -168,7 +205,7 @@ def main():
     ).select([
         "player_id", "name", "poss", "bucket", "end",
         "value", "prior", "deviation", "support", "reliable",
-        "signal", "verdict", "league_mean", "alpha",
+        "signal", "verdict", "verdict_live", "league_mean", "alpha",
     ])
 
     print(f"\n  rows: {df.height:,}  players: {df['player_id'].n_unique():,}")
@@ -190,10 +227,17 @@ def main():
     v = (df.group_by("bucket").agg([
         pl.col("signal").first().alias("signal"),
         pl.col("verdict").first().alias("verdict"),
+        pl.col("verdict_live").first().alias("verdict_live"),
     ]).sort("signal", descending=True))
     print(v)
+    print("  `verdict` is the PUBLISHED (pinned) label — the one Tab 2 renders on.")
+    print("  `verdict_live` is what this run's raw signal implies. They differ only")
+    print("  when a pin is holding against drift; see scripts/identifiability_pins.py.")
     print("  Buckets marked NONE are rendered as 'no measurable effect' rather than")
     print("  as a value. See scripts/assess_identifiability.py for the derivation.")
+
+    if drift:
+        print(drift_banner(drift))
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     df.write_parquet(out_path)
@@ -202,6 +246,7 @@ def main():
     R.mkdir(exist_ok=True)
     (R / f"shotctx_{args.window}_export.json").write_text(json.dumps(dict(
         window=args.window, min_support=args.min_support, buckets=fit_summary,
+        verdict_drift=drift,
         rows=df.height, players=int(df["player_id"].n_unique()),
     ), indent=2))
     print(f"  wrote reports/shotctx_{args.window}_export.json")

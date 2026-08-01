@@ -6,6 +6,13 @@
     "above_break_three": "NONE",
     "corner_three": "NONE"
   },
+  "verdicts_live": {
+    "at_rim": "STRONG",
+    "mid_range": "STRONG",
+    "above_break_three": "NONE",
+    "corner_three": "NONE"
+  },
+  "drift": {},
   "rows": [
     {
       "bucket": "corner_three",

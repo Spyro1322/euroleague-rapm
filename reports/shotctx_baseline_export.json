@@ -7,30 +7,55 @@
       "alpha": 3162.0,
       "league_mean": 105.82205801335348,
       "signal": 0.06641457494143775,
-      "verdict": "NONE"
+      "verdict": "NONE",
+      "verdict_live": "NONE",
+      "pinned": false,
+      "corr_off": 0.06641457494143775,
+      "corr_def": 0.04190369692582143,
+      "signal_driver": "off",
+      "correct_sign": true
     },
     {
       "bucket": "at_rim",
       "alpha": 3162.0,
       "league_mean": 127.59974081273721,
       "signal": 0.48125011207936236,
-      "verdict": "STRONG"
+      "verdict": "STRONG",
+      "verdict_live": "STRONG",
+      "pinned": false,
+      "corr_off": 0.4080084799431443,
+      "corr_def": -0.48125011207936236,
+      "signal_driver": "def",
+      "correct_sign": true
     },
     {
       "bucket": "corner_three",
       "alpha": 1000.0,
       "league_mean": 124.17174268310801,
       "signal": 0.015537362395154672,
-      "verdict": "NONE"
+      "verdict": "NONE",
+      "verdict_live": "NONE",
+      "pinned": false,
+      "corr_off": 0.015537362395154672,
+      "corr_def": -0.008372913142643618,
+      "signal_driver": "off",
+      "correct_sign": true
     },
     {
       "bucket": "mid_range",
       "alpha": 3162.0,
       "league_mean": 77.09614352762685,
       "signal": 0.37185943930657234,
-      "verdict": "STRONG"
+      "verdict": "STRONG",
+      "verdict_live": "STRONG",
+      "pinned": false,
+      "corr_off": 0.3302280411191598,
+      "corr_def": -0.37185943930657234,
+      "signal_driver": "def",
+      "correct_sign": true
     }
   ],
+  "verdict_drift": {},
   "rows": 17464,
   "players": 2183
 }

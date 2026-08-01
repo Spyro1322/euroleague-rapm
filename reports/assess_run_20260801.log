@@ -1,0 +1,93 @@
+
+==============================================================================
+WINDOW baseline
+==============================================================================
+bucket                     att  att/pl    y_sd  dev_sd   dev_n  corr_o  corr_d
+corner_three            33,655    15.4   140.5   1.060  0.0296  +0.016  -0.008
+mid_range              162,143    74.3    81.6   0.484  0.0510  +0.330  -0.372
+above_break_three      197,851    90.6   118.4   0.734  0.0590  +0.066  +0.042
+at_rim                 216,060    99.0    75.4   0.604  0.0798  +0.408  -0.481
+
+  corr(attempts, RAW deviation)        = -0.806  <- confounded by outcome variance, do not use
+  corr(attempts, NORMALISED deviation) = +0.925
+    >>> Normalised separation GROWS with sample size: the model is
+        extracting real structure, not noise.
+
+  PER-BUCKET VERDICT (from unshrunk correlation with overall RAPM):
+    at_rim               |corr|=0.481  STRONG  -> present in the dashboard
+    mid_range            |corr|=0.372  STRONG  -> present in the dashboard
+    above_break_three    |corr|=0.066  NONE    -> SUPPRESS — no evidence of a real effect
+    corner_three         |corr|=0.016  NONE    -> SUPPRESS — no evidence of a real effect
+
+  Live recompute agrees with the pin table. No action needed.
+
+  Interpretation: the two-point buckets (at_rim, mid_range) measure shot
+  creation and rim protection, which are repeatable on-court skills. The
+  three-point buckets measure three-point outcomes, which are largely not
+  repeatable at the lineup level — a well-documented result in the
+  plus-minus literature, and one this model reproduces from Euroleague data.
+  Reporting that asymmetry is a stronger Ch5 claim than a uniform radar.
+
+  wrote reports/shotctx_baseline_identifiability.json  (verdicts = published/pinned; verdicts_live = raw recompute)
+
+==============================================================================
+WINDOW dash
+==============================================================================
+bucket                     att  att/pl    y_sd  dev_sd   dev_n  corr_o  corr_d
+corner_three            11,347    16.2   140.3   0.409  0.0117  +0.044  +0.011
+mid_range               53,394    76.2    82.8   0.493  0.0520  +0.337  -0.306
+at_rim                  70,812   101.0    74.9   0.574  0.0770  +0.368  -0.478
+above_break_three       74,613   106.4   116.3   0.761  0.0675  +0.055  +0.098
+
+  corr(attempts, RAW deviation)        = +0.830  <- confounded by outcome variance, do not use
+  corr(attempts, NORMALISED deviation) = +0.982
+    >>> Normalised separation GROWS with sample size: the model is
+        extracting real structure, not noise.
+
+  PER-BUCKET VERDICT (from unshrunk correlation with overall RAPM):
+    at_rim               |corr|=0.478  STRONG  -> present in the dashboard
+    mid_range            |corr|=0.337  STRONG  -> present in the dashboard
+    above_break_three    |corr|=0.098  NONE    -> SUPPRESS — no evidence of a real effect   <-- 0.002 from a threshold, BORDERLINE
+                         WRONG SIGN: signal carried by corr_def=+0.098, but a real def effect requires negative. Consistent with noise.
+    corner_three         |corr|=0.044  NONE    -> SUPPRESS — no evidence of a real effect
+
+  Live recompute agrees with the pin table. No action needed.
+
+  Interpretation: the two-point buckets (at_rim, mid_range) measure shot
+  creation and rim protection, which are repeatable on-court skills. The
+  three-point buckets measure three-point outcomes, which are largely not
+  repeatable at the lineup level — a well-documented result in the
+  plus-minus literature, and one this model reproduces from Euroleague data.
+  Reporting that asymmetry is a stronger Ch5 claim than a uniform radar.
+
+  wrote reports/shotctx_dash_identifiability.json  (verdicts = published/pinned; verdicts_live = raw recompute)
+
+==============================================================================
+WINDOW eval
+==============================================================================
+bucket                     att  att/pl    y_sd  dev_sd   dev_n  corr_o  corr_d
+corner_three            11,080    16.4   140.6   1.154  0.0332  +0.045  +0.036
+mid_range               51,458    76.0    82.3   0.488  0.0517  +0.360  -0.362
+at_rim                  66,384    98.1    74.8   0.573  0.0758  +0.361  -0.472
+above_break_three       69,248   102.3   117.0   0.309  0.0267  +0.046  +0.033
+
+  corr(attempts, RAW deviation)        = -0.943  <- confounded by outcome variance, do not use
+  corr(attempts, NORMALISED deviation) = +0.353
+    >>> Ambiguous on this axis; rely on the per-bucket verdicts.
+
+  PER-BUCKET VERDICT (from unshrunk correlation with overall RAPM):
+    at_rim               |corr|=0.472  STRONG  -> present in the dashboard
+    mid_range            |corr|=0.362  STRONG  -> present in the dashboard
+    above_break_three    |corr|=0.046  NONE    -> SUPPRESS — no evidence of a real effect
+    corner_three         |corr|=0.045  NONE    -> SUPPRESS — no evidence of a real effect
+
+  Live recompute agrees with the pin table. No action needed.
+
+  Interpretation: the two-point buckets (at_rim, mid_range) measure shot
+  creation and rim protection, which are repeatable on-court skills. The
+  three-point buckets measure three-point outcomes, which are largely not
+  repeatable at the lineup level — a well-documented result in the
+  plus-minus literature, and one this model reproduces from Euroleague data.
+  Reporting that asymmetry is a stronger Ch5 claim than a uniform radar.
+
+  wrote reports/shotctx_eval_identifiability.json  (verdicts = published/pinned; verdicts_live = raw recompute)
