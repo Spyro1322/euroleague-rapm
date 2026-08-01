@@ -35,6 +35,19 @@ WHAT THIS USES INSTEAD
 3. PER-BUCKET VERDICTS, not one global one. Identifiability is a property of a
    bucket; averaging across four of them with different variance and different
    sample sizes answers no useful question.
+
+PINNING — see scripts/identifiability_pins.py
+The verdict rule and the pin table live in that module and are imported by BOTH
+this script and export_shotctx_parquet.py. They used to be written out twice,
+and only the export copy reached the dashboard (the mirror ships parquet; it
+never sees reports/), so editing the rule here alone changed nothing a reader
+would see.
+
+above_break_three peaks at 0.098 against a WEAK cutoff of 0.10 and reads NONE in
+all three windows, so its verdict is pinned rather than recomputed. This script
+still computes the live verdict every run and prints it; when the live number
+disagrees with the pin it warns loudly and publishes the pin. The JSON carries
+both, under `verdicts` (published) and `verdicts_live` (raw).
 """
 
 import argparse
@@ -44,11 +57,11 @@ from pathlib import Path
 import numpy as np
 import polars as pl
 
+from identifiability_pins import (BUCKETS, STRONG, WEAK, borderline,
+                                  drift_banner, published, sign_note)
+
 W = Path("warehouse")
 R = Path("reports")
-BUCKETS = ["at_rim", "mid_range", "corner_three", "above_break_three"]
-
-STRONG, WEAK = 0.25, 0.10
 
 
 def assess(window: str, prefix: str | None = None):
@@ -125,17 +138,34 @@ def assess(window: str, prefix: str | None = None):
             print("    >>> Ambiguous on this axis; rely on the per-bucket verdicts.")
 
     print("\n  PER-BUCKET VERDICT (from unshrunk correlation with overall RAPM):")
-    verdicts = {}
+    NOTES = {"STRONG": "present in the dashboard",
+             "WEAK": "present with an explicit caveat",
+             "NONE": "SUPPRESS — no evidence of a real effect"}
+    verdicts, verdicts_live, drift = {}, {}, {}
     for r in df.sort("signal", descending=True).iter_rows(named=True):
-        s = r["signal"]
-        if s >= STRONG:
-            v, note = "STRONG", "present in the dashboard"
-        elif s >= WEAK:
-            v, note = "WEAK", "present with an explicit caveat"
-        else:
-            v, note = "NONE", "SUPPRESS — no evidence of a real effect"
-        verdicts[r["bucket"]] = v
-        print(f"    {r['bucket']:20} |corr|={s:.3f}  {v:6}  -> {note}")
+        sig = r["signal"]
+        bucket = r["bucket"]
+        v, live, drifted = published(bucket, sig)
+        verdicts[bucket] = v
+        verdicts_live[bucket] = live
+        if drifted:
+            drift[bucket] = dict(live=live, pinned=v, signal=sig)
+
+        margin = borderline(sig)
+        flag = f"   <-- {margin:.3f} from a threshold, BORDERLINE" if margin else ""
+        if drifted:
+            flag += f"   [PINNED {v}, live says {live}]"
+        print(f"    {bucket:20} |corr|={sig:.3f}  {v:6}  -> {NOTES[v]}{flag}")
+        # A borderline magnitude carried by a wrong-signed correlation is noise,
+        # not a weak effect. signal = max(|.|) discards the sign; say it here.
+        sn = sign_note(r["corr_off"], r["corr_def"])
+        if sn:
+            print(f"    {'':20} {sn}")
+
+    if drift:
+        print(drift_banner(drift))
+    else:
+        print("\n  Live recompute agrees with the pin table. No action needed.")
 
     print("\n  Interpretation: the two-point buckets (at_rim, mid_range) measure shot")
     print("  creation and rim protection, which are repeatable on-court skills. The")
@@ -147,8 +177,9 @@ def assess(window: str, prefix: str | None = None):
     R.mkdir(exist_ok=True)
     out = R / f"{prefix}_identifiability.json"
     out.write_text(json.dumps(dict(window=window, verdicts=verdicts,
+                                   verdicts_live=verdicts_live, drift=drift,
                                    rows=df.to_dicts()), indent=2, default=float))
-    print(f"\n  wrote {out}")
+    print(f"\n  wrote {out}  (verdicts = published/pinned; verdicts_live = raw recompute)")
     return df
 
 
