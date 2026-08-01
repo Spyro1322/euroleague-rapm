@@ -1,0 +1,16 @@
+window=dash  buckets=identified ['at_rim', 'mid_range']  metric=euclidean  top_k=10  require_reliable=True  min_support=0
+name map: 6413 rows -> 2374 distinct player_id
+reliability gate: 701 -> 379 players (reliable in all 4 cells)
+feature raw sd (pre-z, post-filter): at_rim__off 0.739, at_rim__def 0.750, mid_range__off 0.664, mid_range__def 0.608
+players in space: 379   dimensions: 4
+distance: mean 2.604  p05 1.057  p50 2.458
+vector norms: mean 1.806  min 0.378  max 4.939
+
+face validity — nearest neighbours:
+  TAVARES, WALTER: BRYANT, ELIJAH (d=1.71), POIRIER, VINCENT (d=2.00), PAPANIKOLAOU, KOSTAS (d=2.06), IBAKA, SERGE (d=2.16), LLULL, SERGIO (d=2.21)
+  FALL, YOUSSOUPHA: STRAZEL, MATTHEW (d=2.19), BLOSSOMGAME, JARON (d=2.34), WARD, TYSON (d=2.37), LOYD, JORDAN (d=2.53), LEKAVICIUS, LUKAS (d=2.63)
+  SLOUKAS, KOSTAS: SEDEKERSKIS, TADAS (d=1.06), MUSA, DZANAN (d=1.48), MILLER-MCINTYRE, CODI (d=1.69), HENRY, PIERRIA (d=1.81), KABENGELE, MFIONDU (d=1.92)
+  HOWARD, WILLIAM: WALDEN, COREY (d=0.41), OSMANI, ERCAN (d=0.45), DORSEY, TYLER (d=0.47), MANNION, NICCOLO (d=0.50), LAZAREVIC, STEFAN (d=0.51)
+  BALDWIN IV, WADE: HOWARD, MARKUS (d=1.14), MUSA, DZANAN (d=1.65), GIEDRAITIS, ROKAS (d=2.00), FORREST, TRENT (d=2.08), SLOUKAS, KOSTAS (d=2.32)
+  MUSA, DZANAN: GIEDRAITIS, ROKAS (d=0.93), MILLER-MCINTYRE, CODI (d=1.13), SLOUKAS, KOSTAS (d=1.48), HOWARD, MARKUS (d=1.52), BALDWIN IV, WADE (d=1.65)
+  VESELY, JAN: JONES, CHRIS (d=0.36), PUNTER, KEVIN (d=0.50), DIOT, ANTOINE (d=1.93), NOUA, AMINE (d=2.20), CAUSEUR, FABIEN (d=2.25)

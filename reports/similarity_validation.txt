@@ -1,0 +1,36 @@
+validate_similarity.py — Ch6 ship/no-ship evidence
+============================================================
+
+dash identified space: 379 players
+
+T1 STRUCTURE — PCA on z-scored deviations
+  explained variance: PC1 0.310, PC2 0.281, PC3 0.209, PC4 0.200
+  PC1 loadings: at_rim__off +0.53, at_rim__def -0.10, mid_range__off -0.54, mid_range__def +0.65
+  PC2 loadings: at_rim__off -0.43, at_rim__def +0.77, mid_range__off -0.47, mid_range__def +0.08
+  PC3 loadings: at_rim__off +0.68, at_rim__def +0.36, mid_range__off -0.14, mid_range__def -0.62
+  PC1 share 0.310, all-same-sign loadings: False
+  VERDICT: multi-dimensional structure retained.
+
+T2 QUALITY CONTAMINATION — distance vs |prior difference|
+  pairs: 71631   corr(distance, |dprior|) = +0.057
+  VERDICT: clean — distance is not a proxy for overall rating.
+
+T3 STABILITY — dash vs eval neighbour sets
+  dash players 379, eval players 360, shared 310
+  mean Jaccard@10 = 0.134
+  identical nearest neighbour: 29/310 = 0.094
+  random-chance Jaccard@10 baseline ~ 0.032
+  VERDICT: weak replication. Ship only with the instability stated, or
+           present neighbourhoods as clusters rather than ranked lists.
+
+============================================================
+SUMMARY
+  PC1 share            0.310
+  corr(dist,|dprior|)  +0.057
+  dash-eval Jaccard@10  0.134
+
+  Ship the finder only if T2 is clean-to-mild AND T3 replicates above
+  roughly twice chance. Otherwise Ch6 reports the negative result, which
+  is a defensible chapter: it establishes that per-context deviations do
+  not support a stable player-similarity metric at this sample depth,
+  consistent with the three-point non-identifiability already in Ch5.

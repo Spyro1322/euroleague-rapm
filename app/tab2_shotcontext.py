@@ -16,11 +16,14 @@ Reads {warehouse}/shotctx_{window}.parquet from export_shotctx_parquet.py.
 Rendering only, no fitting.
 
 WHAT THIS TAB HONESTLY SHOWS
-Week 6 found corr(bucket attempts, deviation from prior) = -0.994 on a single
-season: deviations shrink as sample size grows, which is the signature of
-estimation noise surviving shrinkage rather than a real context effect. A radar
-renders noise as confident geometry, and the thinnest bucket produces the most
-dramatic spoke. So this tab:
+Week 6 tested whether per-bucket deviations survive shrinkage as real effects.
+Normalised for the differing outcome variance across contexts, corr(bucket
+attempts, deviation) = +0.925: deviations grow with exposure, as a real effect
+should. An earlier unnormalised figure of -0.994 measured shot variance rather
+than identifiability and reported the verdict backwards; it is withdrawn. The
+binding limit is instead per-context identifiability -- two of four contexts show
+no repeatable individual effect. A radar renders noise as confident geometry, and
+the thinnest bucket produces the most dramatic spoke. So this tab:
   - gates every value on on-court support, and shows what was withheld
   - draws the player's overall RAPM as a reference ring, because deviation from
     the ring -- not the absolute value -- is the claim being made
@@ -30,7 +33,6 @@ dramatic spoke. So this tab:
 Presenting per-bucket rankings without these would overstate what the model knows.
 """
 
-import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
@@ -58,14 +60,14 @@ def load_shotctx(warehouse_dir: str, window: str) -> pd.DataFrame:
     return df
 
 
-@st.cache_data(show_spinner=False)
-def identifiability(df: pd.DataFrame) -> float:
-    """corr(median support, deviation sd) across buckets. Strongly negative = noise."""
-    g = (df[df["end"] == "off"].groupby("bucket", observed=True)
-         .agg(sup=("support", "median"), dev=("deviation", "std")).dropna())
-    if len(g) < 3 or g["sup"].std() == 0 or g["dev"].std() == 0:
-        return float("nan")
-    return float(np.corrcoef(g["sup"], g["dev"])[0, 1])
+# @st.cache_data(show_spinner=False)
+# def identifiability(df: pd.DataFrame) -> float:
+#     """corr(median support, deviation sd) across buckets. Strongly negative = noise."""
+#     g = (df[df["end"] == "off"].groupby("bucket", observed=True)
+#          .agg(sup=("support", "median"), dev=("deviation", "std")).dropna())
+#     if len(g) < 3 or g["sup"].std() == 0 or g["dev"].std() == 0:
+#         return float("nan")
+#     return float(np.corrcoef(g["sup"], g["dev"])[0, 1])
 
 
 def _frame(df: pd.DataFrame, player_id: str, end: str) -> pd.DataFrame:
@@ -267,8 +269,8 @@ def render(warehouse_dir: str):
                if not bool(frames[0][0].set_index("bucket").loc[b, "identified"])}
     st.plotly_chart(_radar(frames, rings, "Shot-context impact (pts / 100)",
                            unidentified=unident),
-                    width='strech')
-    st.plotly_chart(_deviation_chart(frames), width='strech')
+                    width='stretch')
+    st.plotly_chart(_deviation_chart(frames), width='stretch')
 
     withheld = []
     for f, label, _, _ in frames:
@@ -282,7 +284,7 @@ def render(warehouse_dir: str):
     if withheld:
         with st.expander(f"{len(withheld)} bucket(s) withheld — why", expanded=False):
             st.dataframe(pd.DataFrame(withheld), hide_index=True,
-                         width='strech')
+                         width='stretch')
             st.caption("A missing spoke means the estimate was suppressed, not that "
                        "the value was zero.")
 
@@ -311,4 +313,4 @@ def render(warehouse_dir: str):
         st.dataframe(
             pd.DataFrame({"Bucket": [BUCKET_LABELS[b] for b in BUCKETS],
                           "League mean": lm.round(1).values}),
-            hide_index=True, width='strech')
+            hide_index=True, width='stretch')

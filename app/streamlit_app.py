@@ -18,6 +18,7 @@ import pandas as pd
 import streamlit as st
 
 import tab2_shotcontext
+import tab3_archetypes
 
 
 # Defaults to a warehouse/ beside this file; override for other layouts / HF Spaces.
@@ -110,16 +111,16 @@ def main():
     st.title("Euroleague RAPM")
     st.caption("Regularized Adjusted Plus-Minus, 2007-08 to 2025-26. "
                "Pre-computed artifacts; no live training.")
-    t1, t2, t3, t4, t5 = st.tabs(
-        ["Leaderboard", "Shot context", "Synergy", "Similarity", "Methodology"])
+    t1, t2, t3, t4 = st.tabs(
+        ["Leaderboard", "Shot context", "Archetypes", "Methodology"])
     with t1:
         leaderboard_tab()
-    with t2:                                          # <- new
-        tab2_shotcontext.render(DATA_DIR)            # <- new
-    for tab, label, wk in ((t3, "Synergy", 8),        # <- t2 removed from the loop
-                           (t4, "Similarity finder", 9), (t5, "Methodology", 9)):
-        with tab:
-            st.info(f"{label} - coming in Week {wk}.")
+    with t2:
+        tab2_shotcontext.render(DATA_DIR)
+    with t3:
+        tab3_archetypes.render(DATA_DIR)
+    with t4:
+        st.info("Methodology - coming in Week 9.")
 
 
 if __name__ == "__main__":

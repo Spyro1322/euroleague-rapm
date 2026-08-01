@@ -1,0 +1,38 @@
+decide_tab3_format.py — O4 output-format decision
+==============================================================
+
+F1 SHORT LISTS — neighbour agreement as a function of K
+   K   Jaccard   chance   ratio   same-1st
+   1   0.094     0.003     29.0x   0.094
+   3   0.083     0.010      8.5x   0.094
+   5   0.096     0.016      6.0x   0.094
+  10   0.134     0.032      4.1x   0.094
+
+F2 ARCHETYPES — K-means per window, ARI on 310 shared players
+   k    ARI    interpretation
+   3   +0.335   stable
+   4   +0.415   stable
+   5   +0.429   stable
+   6   +0.382   stable
+   7   +0.315   stable
+   8   +0.253   marginal
+
+==============================================================
+DECISION
+  ARCHETYPES. Best ARI +0.429 at k=5 (>= 0.30).
+  Tab 3 ships shot-context archetypes, not a similarity ranking.
+  Ch6 reports both: rankings unstable across windows, groupings stable.
+ARCHETYPE PROFILES at k=5 (dash window, mean z per axis)
+  A0 (n=44): at_rim__def -0.96, at_rim__off -0.33, mid_range__def -1.45, mid_range__off +0.67
+      e.g. JAMES, MIKE, DIALLO, ALPHA, PUNTER, KEVIN, BLOSSOMGAME, JARON, VESELY, JAN, LOYD, JORDAN
+  A1 (n=99): at_rim__def -0.68, at_rim__off -0.06, mid_range__def +0.86, mid_range__off -0.17
+      e.g. HAYES-DAVIS, NIGEL, BALDWIN IV, WADE, SLOUKAS, KOSTAS, THOMPSON, DARIUS, CALATHES, NICK, SMITS, ROLANDS
+  A2 (n=73): at_rim__def +0.75, at_rim__off -0.92, mid_range__def -0.09, mid_range__off +0.81
+      e.g. OKOBO, ELIE, ULANOVAS, EDGARAS, WEILER-BABB, NICK, HALL, DEVON, CLYBURN, WILL, LARKIN, SHANE
+  A3 (n=87): at_rim__def -0.08, at_rim__off +1.09, mid_range__def -0.16, mid_range__off +0.13
+      e.g. KALINIC, NIKOLA, HEZONJA, MARIO, TAVARES, WALTER, VEZENKOV, SASHA, BRYANT, ELIJAH, BROWN, LORENZO
+  A4 (n=76): at_rim__def +0.80, at_rim__off -0.09, mid_range__def -0.02, mid_range__off -1.09
+      e.g. WALKUP, THOMAS, GUDURIC, MARKO, SHENGELIA, TORNIKE, SORKIN, ROMAN, MONEKE, CHIMA, BONGA, ISAAC
+
+  written: warehouse/shotctx_archetypes_dash.parquet
+

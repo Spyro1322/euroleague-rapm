@@ -1,0 +1,16 @@
+window=eval  buckets=identified ['at_rim', 'mid_range']  metric=euclidean  top_k=10  require_reliable=True  min_support=0
+name map: 6413 rows -> 2374 distinct player_id
+reliability gate: 677 -> 360 players (reliable in all 4 cells)
+feature raw sd (pre-z, post-filter): at_rim__off 0.751, at_rim__def 0.742, mid_range__off 0.661, mid_range__def 0.607
+players in space: 360   dimensions: 4
+distance: mean 2.605  p05 1.062  p50 2.457
+vector norms: mean 1.805  min 0.199  max 5.066
+
+face validity — nearest neighbours:
+  TAVARES, WALTER: MICKEY, JORDAN (d=1.94), OTURU, DAN (d=2.12), DATOME, LUIGI (d=2.12), DECK, GABRIEL (d=2.13), LAMMERS, BEN (d=2.23)
+  FALL, YOUSSOUPHA: LEKAVICIUS, LUKAS (d=1.73), LEDAY, ZACH (d=2.03), STRAZEL, MATTHEW (d=2.04), BLOSSOMGAME, JARON (d=2.08), JAITEH, MAM (d=2.25)
+  SLOUKAS, KOSTAS: FORREST, TRENT (d=0.51), BARON, BILLY (d=1.09), THOMPSON, DARIUS (d=1.11), MUSA, DZANAN (d=1.13), JOVIC, STEFAN (d=1.22)
+  HOWARD, WILLIAM: SIMON, KRUNOSLAV (d=0.24), MILAKNIS, ARTURAS (d=0.61), METU, CHIMEZIE (d=0.68), LESSORT, MATHIAS (d=0.74), AVRAMOVIC, ALEKSA (d=0.78)
+  BALDWIN IV, WADE: MUSA, DZANAN (d=1.88), YABUSELE, GUERSCHON (d=1.89), CAMPAZZO, FACUNDO (d=2.21), THOMPSON, DARIUS (d=2.25), HOWARD, MARKUS (d=2.31)
+  MUSA, DZANAN: THOMPSON, DARIUS (d=0.61), REYNOLDS, JALEN (d=0.73), ANDERSON, JAMES (d=0.77), WILLIAMS-GOSS, NIGEL (d=0.83), YABUSELE, GUERSCHON (d=0.93)
+  VESELY, JAN: PUNTER, KEVIN (d=1.15), DE COLO, NANDO (d=1.59), JONES, CHRIS (d=2.04), HOWARD, WILLIAM (d=2.21), SIMON, KRUNOSLAV (d=2.28)

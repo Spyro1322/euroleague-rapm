@@ -1,0 +1,16 @@
+window=dash  buckets=all ['at_rim', 'mid_range', 'above_break_three', 'corner_three']  metric=euclidean  top_k=10  require_reliable=True  min_support=0
+name map: 6413 rows -> 2374 distinct player_id
+reliability gate: 701 -> 119 players (reliable in all 8 cells)
+feature raw sd (pre-z, post-filter): at_rim__off 0.963, at_rim__def 0.883, mid_range__off 0.796, mid_range__def 0.767, above_break_three__off 1.214, above_break_three__def 1.200, corner_three__off 0.782, corner_three__def 0.680
+players in space: 119   dimensions: 8
+distance: mean 3.867  p05 2.294  p50 3.808
+vector norms: mean 2.720  min 1.181  max 4.846
+
+face validity — nearest neighbours:
+  TAVARES, WALTER: PAPAPETROU, IOANNIS (d=2.77), DORSEY, TYLER (d=2.93), OSMANI, ERCAN (d=3.00), GRANT, JERIAN (d=3.03), PAPAGIANNIS, GEORGIOS (d=3.10)
+  FALL, MOUSTAPHA: BOOKER, DEVIN (d=1.57), PAPANIKOLAOU, KOSTAS (d=1.88), NWORA, JORDAN (d=2.00), HEZONJA, MARIO (d=2.27), OTURU, DAN (d=2.29)
+  SLOUKAS, KOSTAS: MILLER-MCINTYRE, CODI (d=1.94), MUSA, DZANAN (d=2.19), DE COLO, NANDO (d=2.48), MCKISSIC, SHAQUIELLE (d=2.55), HEZONJA, MARIO (d=2.72)
+  HOWARD: not in space (filtered out or absent from window)
+  BALDWIN IV, WADE: DA SILVA, OSCAR (d=2.74), MUSA, DZANAN (d=3.19), SLOUKAS, KOSTAS (d=3.28), MCKISSIC, SHAQUIELLE (d=3.30), KALINIC, NIKOLA (d=3.32)
+  MUSA, DZANAN: SLOUKAS, KOSTAS (d=2.19), MILLER-MCINTYRE, CODI (d=2.24), GIEDRAITIS, ROKAS (d=2.30), MCKISSIC, SHAQUIELLE (d=2.33), WILLIAMS-GOSS, NIGEL (d=2.61)
+  VESELY, JAN: PUNTER, KEVIN (d=1.39), JONES, CHRIS (d=1.67), SATORANSKY, TOMAS (d=2.38), BIBEROVIC, TARIK (d=2.53), LESSORT, MATHIAS (d=2.62)

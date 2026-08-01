@@ -1,0 +1,6 @@
+
+======================================================================
+AGREEMENT identified vs all buckets: mean Jaccard@10 = 0.102 over 118 shared players
+NOTE the two runs have different populations: the reliability gate is
+stricter over 8 cells than over 4, so 'all' is a subset. Jaccard is
+computed on the intersection only.
