@@ -20,7 +20,7 @@ VERIFIED without re-deriving it from an artifact.**
 |---|---|---|
 | `rapm_baseline_ci` | `python scripts/fit_ridge_rapm.py --prefix rapm --bootstrap 500 --alpha 1995.3 --out rapm_baseline_ci` | All-time 2007–2025. **α pinned, not CV-selected** — reproduces the validated Week 3 fit. 500 bootstrap resamples for the leaderboard CIs. |
 | `rapm_dash` | `python scripts/fit_ridge_rapm.py --prefix rapm_dash --bootstrap 500 --out rapm_dash` | Current-form 2021–2025. **No `--alpha`** — CV selected 3162.3. Default floors. Dashboard default window. |
-| `rapm_eval` | `python scripts/fit_ridge_rapm.py --prefix rapm_eval --out rapm_eval` | Hold-out-safe 2020–2024, 2025-26 fully excluded. No --alpha (CV selected 3162.3) and no --bootstrap, which defaults to 0 — this fit has NO credible intervals. Point estimates only.
+| `rapm_eval` | `python scripts/fit_ridge_rapm.py --prefix rapm_eval --out rapm_eval` | Superseded. Original: --prefix rapm_eval --out rapm_eval (no --alpha, CV selected 3162.3; no --bootstrap, defaulting to 0 → no CIs). Re-fit 2026-08 with α pinned to the CV-selected value to add intervals: python3 scripts/fit_ridge_rapm.py --prefix rapm_eval --alpha 3162.3 --bootstrap 500 --out rapm_eval. Point estimates unchanged (same α, same design, seed 42); CIs added.
 
 ### Replication fit (Ch4 validation — absent from STATUS.md before this file)
 
