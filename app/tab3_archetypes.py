@@ -12,15 +12,18 @@ WHY ARCHETYPES AND NOT A SIMILARITY RANKING
 O4 was originally a lineup-pair synergy model, rescoped to a similarity finder, and
 the finder was then tested before shipping. It failed:
 
-  Neighbour-set agreement between the dash (2021-2025) and eval (2020-2024) fitting
-  windows was Jaccard@10 = 0.147, and flat across K (0.092 at K=1, 0.089 at K=3,
-  0.105 at K=5). Those two windows share FOUR OF FIVE SEASONS, so ~85% turnover in
-  the neighbour list on ~80% shared data is a failure, not a marginal pass. Ranking
+  Neighbour-set agreement between the dash (2021-2025) and eval (2020-2024)
+  fitting windows was Jaccard@10 = 0.134 (0.094 at K=1, 0.083 at K=3, 0.096 at
+  K=5). Jaccard is intersection over union, so 0.134 at K=10 is about 2.4 of ten
+  neighbours in common -- roughly three quarters of the list turning over. Those
+  two windows share FOUR OF FIVE SEASONS, so that is a failure on ~80% shared
+  data, not a marginal pass. Agreement does not improve as the list is shortened:
+  the single nearest neighbour is unchanged for only 9.4% of players. Ranking
   individual players by similarity is not defensible on this data.
 
-  Cluster membership over the same players survived: adjusted Rand index +0.405 at
-  k=5, and stable across every k from 3 to 8 (+0.321 to +0.405). ARI is
-  chance-corrected, so 0 is a random partition.
+  Cluster membership over the same players survived: adjusted Rand index +0.429
+  at k=5, and stable across every k from 3 to 7 (+0.315 to +0.429; k=8 is
+  marginal at +0.253). ARI is chance-corrected, so 0 is a random partition.
 
 That contrast is itself the finding, and this tab states it rather than hiding it:
 in a densely populated continuous space, WHICH player is nearest flips under small
@@ -29,7 +32,7 @@ shows regions, and deliberately offers no "10 most similar players" list.
 
 The space is four-dimensional (at_rim and mid_range, offence and defence). The two
 three-point contexts are excluded because Ch5 found them non-identifiable, and
-including them collapses the reliably-placed population from 362 players to 118
+including them collapses the reliably-placed population from 379 players to 119
 while reordering neighbourhoods almost completely (Jaccard 0.102).
 """
 
@@ -168,9 +171,10 @@ def render(warehouse_dir: str):
         f"partition at an adjusted Rand index of +0.429 (0 would be random), and "
         f"that holds for every group count from 3 to 7, so k={k} is a presentational "
         f"choice rather than a tuned one. **Individual similarity is not stable** — "
-        f"the ten nearest players to a given player agree only 13% between windows "
-        f"that share four of five seasons. That is why this tab shows regions and "
-        f"deliberately offers no 'most similar players' ranking.")
+        f"a ten-player 'most similar' list keeps only about two of its ten names "
+        f"between windows that share four of five seasons, and the single closest "
+        f"player changes for nine cases in ten. That is why this tab shows regions "
+        f"and deliberately offers no 'most similar players' ranking.")
 
     profiles = (df.groupby("archetype")[zc].mean())
     sizes = df.groupby("archetype").size()

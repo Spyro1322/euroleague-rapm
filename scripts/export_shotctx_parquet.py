@@ -38,8 +38,10 @@ variance normalisation. Week 6, consistent across all three windows:
     above_break_three |corr| ~0.05-0.10   NONE
     corner_three      |corr| ~0.02-0.05   NONE
 Two-point buckets measure shot creation and rim protection, which are repeatable
-on-court skills. Three-point buckets measure three-point outcomes, which largely
-are not repeatable at lineup level -- a known plus-minus result, reproduced here.
+on-court skills. The three-point result is what the spatial-defence literature
+predicts: Franks et al. (2015) find a defender's influence falls mainly on where
+opponents shoot from rather than on whether those shots fall, and this model
+conditions on location, so it is estimated on the weaker channel. See Ch5 s5.8.
 
 The verdict rule and the pin table now live in scripts/identifiability_pins.py
 and are imported, NOT re-implemented here. This script used to recompute the
@@ -55,7 +57,10 @@ as `verdict_live` and in the export JSON, and a disagreement prints a warning
 rather than quietly changing the dashboard.
 
 OUTPUT  warehouse/shotctx_{window}.parquet, one row per player x bucket x end
-    player_id, name, poss   identity + overall exposure
+    player_id, name         identity, from player_id_map.parquet (NOT the
+                            leaderboard, which is floored for display)
+    poss                    overall exposure, from the leaderboard; null for
+                            players below its display floor
     bucket, end             'off' | 'def'
     value                   fitted rating, positive-for-good, pts/100 of that type
     prior                   shrinkage target = that player's overall O/D RAPM
@@ -117,7 +122,18 @@ def main():
     lb_stem = str(dmeta["leaderboard_stem"])
     lb = pl.read_parquet(W / f"{lb_stem}.parquet")
     print(f"  leaderboard: {lb_stem}.parquet ({lb.height} players)")
-    lb_small = lb.select(["player_id", "name", "poss", "ORAPM", "DRAPM"])
+    lb_small = lb.select(["player_id", "poss", "ORAPM", "DRAPM"])
+
+    # NAME COMES FROM THE ID MAP, NOT THE LEADERBOARD.
+    # The leaderboard is floored for display, so joining names from it left every
+    # player below that floor with a null name -- an identity field supplied by a
+    # presentation setting. player_id_map.parquet is the authority on identity.
+    # It is (name, season)-keyed, so take the most recent season's spelling.
+    idmap = (pl.read_parquet(W / "player_id_map.parquet")
+               .sort("season", descending=True)
+               .unique(subset=["player_id"], keep="first")
+               .select(["player_id", "name"]))
+    print(f"  id map: player_id_map.parquet ({idmap.height} players)")
 
     records, fit_summary, drift = [], [], {}
     for bucket in found:
@@ -183,6 +199,7 @@ def main():
 
     df = pl.DataFrame(records).with_columns(
         (pl.col("value") - pl.col("prior")).alias("deviation")
+    ).join(idmap, on="player_id", how="left"
     ).join(lb_small, on="player_id", how="left")
 
     # ---- sign assertions, against evidence the export did not construct
@@ -211,8 +228,15 @@ def main():
     print(f"\n  rows: {df.height:,}  players: {df['player_id'].n_unique():,}")
     unnamed = df.filter(pl.col("name").is_null())["player_id"].n_unique()
     if unnamed:
-        print(f"  {unnamed} player(s) absent from the leaderboard (below its display "
-              f"floor); they carry prior 0 and are not selectable in the dashboard.")
+        print(f"  WARNING: {unnamed} player(s) have no name in player_id_map.parquet.")
+        print(f"  That is an identity failure, not a display floor. Two ids schemes")
+        print(f"  coexist (P\\d{{6}} and legacy P[A-Z]{{3}}); check the map covers both")
+        print(f"  before shipping this artifact.")
+    unlisted = df.filter(pl.col("poss").is_null())["player_id"].n_unique()
+    if unlisted:
+        print(f"  {unlisted} player(s) sit below the leaderboard's display floor and "
+              f"carry no overall possession count. They are named and exported; only "
+              f"the exposure column is absent.")
 
     print("\n  support / reliability by bucket (offensive end):")
     rel = (df.filter(pl.col("end") == "off").group_by("bucket").agg([

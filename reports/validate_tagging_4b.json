@@ -1,0 +1,403 @@
+{
+  "source": "warehouse/tagged_shots_ids.parquet",
+  "rows": 610554,
+  "seasons": [
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "stored_mix": {
+    "at_rim": 216374,
+    "above_break_three": 198122,
+    "mid_range": 162348,
+    "corner_three": 33710
+  },
+  "unexpected_buckets": [],
+  "rule_recovery": [
+    {
+      "corner_depth": 220.0,
+      "rim_strict_lt": false,
+      "rim_actions_always_at_rim": true,
+      "agreement": 1.0,
+      "disagreements": 0
+    },
+    {
+      "corner_depth": 220.0,
+      "rim_strict_lt": true,
+      "rim_actions_always_at_rim": true,
+      "agreement": 0.9997821650501021,
+      "disagreements": 133
+    },
+    {
+      "corner_depth": 225.0,
+      "rim_strict_lt": false,
+      "rim_actions_always_at_rim": true,
+      "agreement": 0.999531572964881,
+      "disagreements": 286
+    },
+    {
+      "corner_depth": 225.0,
+      "rim_strict_lt": true,
+      "rim_actions_always_at_rim": true,
+      "agreement": 0.9993137380149831,
+      "disagreements": 419
+    },
+    {
+      "corner_depth": 220.0,
+      "rim_strict_lt": false,
+      "rim_actions_always_at_rim": false,
+      "agreement": 0.9972418492058033,
+      "disagreements": 1684
+    },
+    {
+      "corner_depth": 220.0,
+      "rim_strict_lt": true,
+      "rim_actions_always_at_rim": false,
+      "agreement": 0.9970174628288407,
+      "disagreements": 1821
+    },
+    {
+      "corner_depth": 225.0,
+      "rim_strict_lt": false,
+      "rim_actions_always_at_rim": false,
+      "agreement": 0.9967734221706843,
+      "disagreements": 1970
+    },
+    {
+      "corner_depth": 225.0,
+      "rim_strict_lt": true,
+      "rim_actions_always_at_rim": false,
+      "agreement": 0.9965490357937218,
+      "disagreements": 2107
+    }
+  ],
+  "rule_recovered": {
+    "corner_depth": 220.0,
+    "rim_strict_lt": false,
+    "rim_actions_always_at_rim": true,
+    "agreement": 1.0,
+    "disagreements": 0
+  },
+  "rule_recovery_ties": 1,
+  "disagreement_pairs": [],
+  "action_codes": [
+    "2FGA",
+    "2FGAB",
+    "2FGM",
+    "3FGA",
+    "3FGAB",
+    "3FGM",
+    "DUNK",
+    "LAYUPATT",
+    "LAYUPMD"
+  ],
+  "unhandled_codes": [],
+  "code_routing": [
+    {
+      "ID_ACTION": "2FGA",
+      "bucket": "mid_range",
+      "len": 96588
+    },
+    {
+      "ID_ACTION": "2FGA",
+      "bucket": "at_rim",
+      "len": 49861
+    },
+    {
+      "ID_ACTION": "2FGAB",
+      "bucket": "mid_range",
+      "len": 3173
+    },
+    {
+      "ID_ACTION": "2FGAB",
+      "bucket": "at_rim",
+      "len": 2659
+    },
+    {
+      "ID_ACTION": "2FGM",
+      "bucket": "at_rim",
+      "len": 97198
+    },
+    {
+      "ID_ACTION": "2FGM",
+      "bucket": "mid_range",
+      "len": 62587
+    },
+    {
+      "ID_ACTION": "3FGA",
+      "bucket": "above_break_three",
+      "len": 127691
+    },
+    {
+      "ID_ACTION": "3FGA",
+      "bucket": "corner_three",
+      "len": 19643
+    },
+    {
+      "ID_ACTION": "3FGAB",
+      "bucket": "above_break_three",
+      "len": 564
+    },
+    {
+      "ID_ACTION": "3FGAB",
+      "bucket": "corner_three",
+      "len": 117
+    },
+    {
+      "ID_ACTION": "3FGM",
+      "bucket": "above_break_three",
+      "len": 69867
+    },
+    {
+      "ID_ACTION": "3FGM",
+      "bucket": "corner_three",
+      "len": 13950
+    },
+    {
+      "ID_ACTION": "DUNK",
+      "bucket": "at_rim",
+      "len": 7040
+    },
+    {
+      "ID_ACTION": "LAYUPATT",
+      "bucket": "at_rim",
+      "len": 25816
+    },
+    {
+      "ID_ACTION": "LAYUPMD",
+      "bucket": "at_rim",
+      "len": 33800
+    }
+  ],
+  "flag_fb": {
+    "rows": 18477,
+    "zero_point_rows": 7,
+    "mix": {
+      "at_rim": 14522,
+      "above_break_three": 2289,
+      "mid_range": 1060,
+      "corner_three": 606
+    }
+  },
+  "flag_sc": {
+    "rows": 26567,
+    "zero_point_rows": 16,
+    "mix": {
+      "at_rim": 16744,
+      "above_break_three": 4728,
+      "mid_range": 4228,
+      "corner_three": 867
+    }
+  },
+  "orientation_overall": 0.004676081067358498,
+  "geometry_by_season": [
+    {
+      "Season": 2007,
+      "n": 27061,
+      "null_coord_rate": 0.0,
+      "three_inside_arc": 0.10932308970099668,
+      "two_beyond_arc": 0.0008606345745596419,
+      "orientation_fail": 0.03946639074683123,
+      "r_median": 303.8157336281319,
+      "r_max": 1398.1248156012396
+    },
+    {
+      "Season": 2008,
+      "n": 21809,
+      "null_coord_rate": 0.0,
+      "three_inside_arc": 0.02942701581540057,
+      "two_beyond_arc": 0.0006385242993969493,
+      "orientation_fail": 0.010821220597001238,
+      "r_median": 321.8850726579286,
+      "r_max": 1335.1198448079483
+    },
+    {
+      "Season": 2009,
+      "n": 21376,
+      "null_coord_rate": 0.0,
+      "three_inside_arc": 0.04389312977099236,
+      "two_beyond_arc": 0.0004439183190292986,
+      "orientation_fail": 0.016420284431137723,
+      "r_median": 337.739544619815,
+      "r_max": 1367.2911175020483
+    },
+    {
+      "Season": 2010,
+      "n": 22198,
+      "null_coord_rate": 0.0,
+      "three_inside_arc": 0.035886818495514144,
+      "two_beyond_arc": 0.0008025145455761386,
+      "orientation_fail": 0.012253356158212452,
+      "r_median": 317.10644124137957,
+      "r_max": 1380.0789832469734
+    },
+    {
+      "Season": 2011,
+      "n": 22381,
+      "null_coord_rate": 0.0,
+      "three_inside_arc": 0.004091653027823241,
+      "two_beyond_arc": 0.0013289919595986443,
+      "orientation_fail": 0.0022340377999195745,
+      "r_median": 351.20506830055854,
+      "r_max": 1303.8608054543245
+    },
+    {
+      "Season": 2012,
+      "n": 30050,
+      "null_coord_rate": 0.0,
+      "three_inside_arc": 0.0015439544533436265,
+      "two_beyond_arc": 0.0011682836389495606,
+      "orientation_fail": 0.0012978369384359402,
+      "r_median": 363.0495833904785,
+      "r_max": 1424.4191798764857
+    },
+    {
+      "Season": 2013,
+      "n": 30049,
+      "null_coord_rate": 0.0,
+      "three_inside_arc": 0.002005347593582888,
+      "two_beyond_arc": 0.0016856515298564643,
+      "orientation_fail": 0.001797064794169523,
+      "r_median": 359.5385931996731,
+      "r_max": 1397.6616185615171
+    },
+    {
+      "Season": 2014,
+      "n": 29958,
+      "null_coord_rate": 0.0,
+      "three_inside_arc": 0.0016697588126159556,
+      "two_beyond_arc": 0.0011471477734904577,
+      "orientation_fail": 0.0013352026169971293,
+      "r_median": 370.84363281577316,
+      "r_max": 1421.788310544154
+    },
+    {
+      "Season": 2015,
+      "n": 29903,
+      "null_coord_rate": 0.0,
+      "three_inside_arc": 0.001987353206865402,
+      "two_beyond_arc": 0.0010619656985079381,
+      "orientation_fail": 0.001404541350366184,
+      "r_median": 392.02040763205173,
+      "r_max": 1445.2902822616638
+    },
+    {
+      "Season": 2016,
+      "n": 31476,
+      "null_coord_rate": 0.0,
+      "three_inside_arc": 0.0021680686844159224,
+      "two_beyond_arc": 0.0011531712208573577,
+      "orientation_fail": 0.0015249714067861228,
+      "r_median": 383.275357934736,
+      "r_max": 1453.0216791225105
+    },
+    {
+      "Season": 2017,
+      "n": 31854,
+      "null_coord_rate": 0.0,
+      "three_inside_arc": 0.005486621085506879,
+      "two_beyond_arc": 0.001299545159194282,
+      "orientation_fail": 0.002856784077352923,
+      "r_median": 381.75384739384094,
+      "r_max": 1412.1487173807154
+    },
+    {
+      "Season": 2018,
+      "n": 31675,
+      "null_coord_rate": 0.0,
+      "three_inside_arc": 0.0026874947509868143,
+      "two_beyond_arc": 0.0008599757183326589,
+      "orientation_fail": 0.0015469613259668509,
+      "r_median": 373.28005572224185,
+      "r_max": 1402.0788137619083
+    },
+    {
+      "Season": 2019,
+      "n": 31046,
+      "null_coord_rate": 0.0,
+      "three_inside_arc": 0.001927246446639364,
+      "two_beyond_arc": 0.0018286451890496423,
+      "orientation_fail": 0.0018681955807511434,
+      "r_median": 394.8847931228496,
+      "r_max": 1419.929575718458
+    },
+    {
+      "Season": 2020,
+      "n": 39445,
+      "null_coord_rate": 0.0,
+      "three_inside_arc": 0.002304147465437788,
+      "two_beyond_arc": 0.0015952310986104697,
+      "orientation_fail": 0.0018760299150716187,
+      "r_median": 415.3227660506946,
+      "r_max": 1416.3933069596171
+    },
+    {
+      "Season": 2021,
+      "n": 36185,
+      "null_coord_rate": 0.0,
+      "three_inside_arc": 0.0025601992803764187,
+      "two_beyond_arc": 0.0015644411724106198,
+      "orientation_fail": 0.001962139007876192,
+      "r_median": 418.81977030699016,
+      "r_max": 1438.7331232719987
+    },
+    {
+      "Season": 2022,
+      "n": 39929,
+      "null_coord_rate": 0.0,
+      "three_inside_arc": 0.0020077877829155514,
+      "two_beyond_arc": 0.0022134252756140127,
+      "orientation_fail": 0.00212877858198302,
+      "r_median": 399.71239660535923,
+      "r_max": 1430.8067654299095
+    },
+    {
+      "Season": 2023,
+      "n": 41276,
+      "null_coord_rate": 0.0,
+      "three_inside_arc": 0.0032229185317815576,
+      "two_beyond_arc": 0.0020798499245544633,
+      "orientation_fail": 0.0025438511483670896,
+      "r_median": 394.2346742177307,
+      "r_max": 1460.60946183434
+    },
+    {
+      "Season": 2024,
+      "n": 41436,
+      "null_coord_rate": 0.0,
+      "three_inside_arc": 0.0022222222222222222,
+      "two_beyond_arc": 0.0011094674556213018,
+      "orientation_fail": 0.001568684235930109,
+      "r_median": 403.83783874223576,
+      "r_max": 1417.6402928810962
+    },
+    {
+      "Season": 2025,
+      "n": 51447,
+      "null_coord_rate": 0.0,
+      "three_inside_arc": 0.001975633849193283,
+      "two_beyond_arc": 0.0004968861799390487,
+      "orientation_fail": 0.001107936322817657,
+      "r_median": 390.5444917035702,
+      "r_max": 1452.1490970282632
+    }
+  ],
+  "boundary_corner_220_225": 286,
+  "boundary_rim_exact": 137
+}

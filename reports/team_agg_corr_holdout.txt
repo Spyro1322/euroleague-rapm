@@ -1,0 +1,36 @@
+==========================================================================
+OUT-OF-SAMPLE TEAM AGGREGATION -- trained 2020-2024, evaluated on 2025
+==========================================================================
+held-out games: 402   teams: 20   median 38 games
+held-out players: 335
+exposure weight: held-out minutes from the boxscore table
+players with team and weight: 247
+training player-seasons: 1,073
+frozen box-score players: 453   frozen rapm players: 677
+
+held-out exposure covered by each frozen arm:
+  plusminus     74.7%
+  pir           74.7%
+  win_score     74.7%
+  rapm          77.9%
+  Uncovered exposure is players who did not appear in the training
+  window -- newcomers to the competition. Their teams are aggregated
+  from a partial roster, which is itself a limitation worth stating.
+
+players rated by every arm: 175 of 247 (74.7% of exposure)
+
+arm                   full      common    teams
+-----------------------------------------------
+win_score            0.712       0.712       20
+pir                  0.574       0.574       20
+plusminus            0.557       0.557       20
+rapm                 0.514       0.510       20
+
+Correlation with 2025 team win percentage. All arms frozen on 2020-2024.
+'common' restricts to players rated by every arm and is the comparable column.
+
+Compare against the in-window figures from team_agg_corr.py. A large fall
+for rapm relative to the box-score arms supports the reading that its
+in-window team-level signal is fitted rather than transferable.
+
+-> reports/team_agg_corr_holdout.txt
