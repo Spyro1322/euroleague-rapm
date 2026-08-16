@@ -116,11 +116,13 @@ def _scatter(df, coords, var, highlight_pid=None):
                 hoverinfo="skip"))
 
     fig.update_layout(
-        height=520, margin=dict(l=40, r=20, t=50, b=40),
-        title="Shot-context space (2-D projection of 4 dimensions)",
+        height=560, margin=dict(l=40, r=20, t=110, b=40),
+        title=dict(text="Shot-context space (2-D projection of 4 dimensions)",
+                   y=0.98, yanchor="top", pad=dict(b=14)),
         xaxis_title=f"PC1 — {var[0]*100:.0f}% of variance",
         yaxis_title=f"PC2 — {var[1]*100:.0f}% of variance",
-        legend=dict(orientation="h", yanchor="bottom", y=1.02))
+        legend=dict(orientation="h", yanchor="top", y=1.0,
+                    xanchor="left", x=0))
     return fig
 
 
@@ -136,11 +138,13 @@ def _profile_chart(profiles: pd.DataFrame, zc: list[str], focus: int | None):
             hovertemplate="%{x}: %{y:+.2f} sd<extra>A" + str(a) + "</extra>"))
     fig.add_hline(y=0, line=dict(color="#888", width=1))
     fig.update_layout(
-        height=300, barmode="group",
-        margin=dict(l=40, r=20, t=50, b=40),
-        title="Archetype profiles (mean standardised deviation per axis)",
+        height=350, barmode="group",
+        margin=dict(l=40, r=20, t=110, b=40),
+        title=dict(text="Archetype profiles (mean standardised deviation per axis)",
+                   y=0.98, yanchor="top", pad=dict(b=14)),
         yaxis_title="sd from league mean",
-        legend=dict(orientation="h", yanchor="bottom", y=1.02))
+        legend=dict(orientation="h", yanchor="top", y=1.0,
+                    xanchor="left", x=0))
     return fig
 
 
@@ -164,17 +168,6 @@ def render(warehouse_dir: str):
         "deviation and units are standard deviations. Groups cut across playing "
         "positions by design: this is a profile of contextual impact, not a "
         "position classifier.")
-
-    st.info(
-        f"**What this tab does and does not claim.** Membership of a group is "
-        f"stable: refitting on a different five-season window reproduces the same "
-        f"partition at an adjusted Rand index of +0.429 (0 would be random), and "
-        f"that holds for every group count from 3 to 7, so k={k} is a presentational "
-        f"choice rather than a tuned one. **Individual similarity is not stable** — "
-        f"a ten-player 'most similar' list keeps only about two of its ten names "
-        f"between windows that share four of five seasons, and the single closest "
-        f"player changes for nine cases in ten. That is why this tab shows regions "
-        f"and deliberately offers no 'most similar players' ranking.")
 
     profiles = (df.groupby("archetype")[zc].mean())
     sizes = df.groupby("archetype").size()
@@ -259,3 +252,13 @@ def render(warehouse_dir: str):
             f"each), so no single dimension dominates. The leading axis contrasts "
             f"at-rim with mid-range offence — the rim-tilt contrast reported in "
             f"Ch5, recovered here without supervision.")
+    st.info(
+        f"**What this tab does and does not claim.** Membership of a group is "
+        f"stable: refitting on a different five-season window reproduces the same "
+        f"partition at an adjusted Rand index of +0.429 (0 would be random), and "
+        f"that holds for every group count from 3 to 7, so k={k} is a presentational "
+        f"choice rather than a tuned one. **Individual similarity is not stable** — "
+        f"a ten-player 'most similar' list keeps only about two of its ten names "
+        f"between windows that share four of five seasons, and the single closest "
+        f"player changes for nine cases in ten. That is why this tab shows regions "
+        f"and deliberately offers no 'most similar players' ranking.")

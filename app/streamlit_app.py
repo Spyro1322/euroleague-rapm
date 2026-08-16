@@ -17,16 +17,60 @@ from pathlib import Path
 import pandas as pd
 import streamlit as st
 
+import landing
 import tab2_shotcontext
 import tab3_archetypes
+import tab4_methodology
 
-
+def _hide_chrome() -> None:
+    """Remove Streamlit's top-right toolbar, deploy button and status widget."""
+    st.markdown(
+        """
+        <style>
+        /* running-man status widget */
+        [data-testid="stStatusWidget"] { display: none !important; }
+        /* deploy button (new + legacy selectors) */
+        [data-testid="stAppDeployButton"] { display: none !important; }
+        .stDeployButton { display: none !important; }
+        /* toolbar + hamburger */
+        [data-testid="stToolbar"] { display: none !important; }
+        [data-testid="stToolbarActions"] { display: none !important; }
+        [data-testid="stMainMenu"] { display: none !important; }
+        #MainMenu { display: none !important; }
+        /* rainbow decoration bar + footer */
+        [data-testid="stDecoration"] { display: none !important; }
+        footer { display: none !important; }
+        /* header becomes an invisible spacer */
+        [data-testid="stHeader"] {
+            background: transparent !important;
+            height: 0 !important;
+        }
+        /* reclaim the space the header left behind */
+        .block-container { padding-top: 2rem !important; }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
 # Defaults to a warehouse/ beside this file; override for other layouts / HF Spaces.
 DATA_DIR = Path(os.environ.get("RAPM_WAREHOUSE", Path(__file__).parent / "warehouse"))
 DISPLAY_MIN_POSS = 3000  # display filter only; the model fits at min-poss 500
+ASSETS = Path(__file__).parent / "assets"
 
-st.set_page_config(page_title="Euroleague RAPM", layout="wide")
+st.set_page_config(page_title="At the Buzzer", page_icon=str(ASSETS / "logo.png")
+                   ,layout="wide")
 
+if landing.gate():
+    st.stop()
+
+landing.home_button()   # sits above your tabs
+
+_hide_chrome()
+
+st.logo(
+    str(ASSETS / "logo.png"),
+    icon_image=str(ASSETS / "logo.png"),
+    size="large",
+)
 
 @st.cache_data(show_spinner=False)
 def load(name: str) -> pd.DataFrame:
@@ -34,13 +78,11 @@ def load(name: str) -> pd.DataFrame:
     if not p.exists():
         return pd.DataFrame()
     return pd.read_parquet(p)
-
-
+    
 def ci_str(lo, hi):
     if pd.isna(lo) or pd.isna(hi):
         return ""
     return f"[{lo:+.2f}, {hi:+.2f}]"
-
 
 def leaderboard_tab():
     src = st.radio(
@@ -108,9 +150,8 @@ def leaderboard_tab():
 
 
 def main():
-    st.title("Euroleague RAPM")
-    st.caption("Regularized Adjusted Plus-Minus, 2007-08 to 2025-26. "
-               "Pre-computed artifacts; no live training.")
+    st.title("At the Buzzer")
+    st.caption("Advanced Analytics Platform")
     t1, t2, t3, t4 = st.tabs(
         ["Leaderboard", "Shot context", "Archetypes", "Methodology"])
     with t1:
@@ -120,7 +161,7 @@ def main():
     with t3:
         tab3_archetypes.render(DATA_DIR)
     with t4:
-        st.info("Methodology - coming in Week 9.")
+        tab4_methodology.render()
 
 
 if __name__ == "__main__":

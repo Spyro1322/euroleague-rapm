@@ -164,12 +164,12 @@ def _radar(frames, rings, title, unidentified=(), weak_buckets=()):
     allv += [v for v, _ in rings.values()]
     lim = max(2.0, max(abs(v) for v in allv) * 1.2) if allv else 2.0
 
-    bottom = 70
+    bottom = 92
     if unidentified:
         fig.add_annotation(
             text="\u2020 no measurable player effect in this context — "
                  "drawn on the overall-rating ring",
-            xref="paper", yref="paper", x=0.5, y=-0.08, showarrow=False,
+            xref="paper", yref="paper", x=0.5, y=-0.14, showarrow=False,
             font=dict(size=11, color="#7A7A7A"))
         bottom += 18
     if weak_buckets:
@@ -177,7 +177,7 @@ def _radar(frames, rings, title, unidentified=(), weak_buckets=()):
             text="\u2021 weak evidence of a real effect — shown, but treat "
                  "the estimate cautiously, not as a confident ranking",
             xref="paper", yref="paper", x=0.5,
-            y=-0.08 - (0.06 if unidentified else 0), showarrow=False,
+            y=-0.14 - (0.055 if unidentified else 0), showarrow=False,
             font=dict(size=11, color="#8A6D1F"))
         bottom += 18
 
@@ -185,7 +185,10 @@ def _radar(frames, rings, title, unidentified=(), weak_buckets=()):
         title=title, height=520, showlegend=True,
         margin=dict(l=60, r=60, t=60, b=bottom),
         polar=dict(radialaxis=dict(visible=True, range=[-lim, lim],
-                                   tickformat="+.1f"),
+                                   tickformat="+.1f",
+                                   angle=45, tickangle=45,
+                                   showline=False,
+                                   tickfont=dict(size=10, color="#8A8F98")),
                    angularaxis=dict(direction="clockwise")))
     return fig
 
@@ -231,32 +234,7 @@ def render(warehouse_dir: str):
                    f"(expected `shotctx_{window}.parquet`).")
         return
 
-    if "verdict" in df.columns:
-        vb = (df.groupby("bucket", observed=True)
-                .agg(verdict=("verdict", "first"), signal=("signal", "first")))
-        strong = [BUCKET_LABELS[b] for b in BUCKETS
-                  if b in vb.index and vb.loc[b, "verdict"] == "STRONG"]
-        weak_b = [BUCKET_LABELS[b] for b in BUCKETS
-                  if b in vb.index and vb.loc[b, "verdict"] == "WEAK"]
-        none_ = [BUCKET_LABELS[b] for b in BUCKETS
-                 if b in vb.index and vb.loc[b, "verdict"] == "NONE"]
-        if none_:
-            st.info(
-                f"**{' and '.join(none_)} are not shown.** Player impact is "
-                f"measurably identifiable for {' and '.join(strong) or 'no other bucket'}, "
-                f"but not for {' or '.join(none_)}: those estimates show no correlation "
-                f"with a player's overall rating, i.e. no evidence of a repeatable "
-                f"individual effect. Three-point outcomes being largely "
-                f"non-repeatable at lineup level is a known result, and this model "
-                f"reproduces it. The axes remain on the chart so the asymmetry is "
-                f"visible rather than hidden.")
-        if weak_b:
-            st.info(
-                f"**{' and '.join(weak_b)}** shows weak evidence of a real effect — "
-                f"close to, but on the identifiable side of, the threshold used for "
-                f"{' or '.join(none_) if none_ else 'the suppressed bucket(s)'}. "
-                f"The estimate is shown, marked with \u2021, but should be read as a "
-                f"tentative signal rather than a confident ranking.")
+    
 
     st.caption(
         "Each spoke is the player's estimated impact on possessions ending in that "
@@ -336,6 +314,33 @@ def render(warehouse_dir: str):
                          width='stretch')
             st.caption("A missing spoke means the estimate was suppressed, not that "
                        "the value was zero.")
+            
+    if "verdict" in df.columns:
+            vb = (df.groupby("bucket", observed=True)
+                    .agg(verdict=("verdict", "first"), signal=("signal", "first")))
+            strong = [BUCKET_LABELS[b] for b in BUCKETS
+                      if b in vb.index and vb.loc[b, "verdict"] == "STRONG"]
+            weak_b = [BUCKET_LABELS[b] for b in BUCKETS
+                      if b in vb.index and vb.loc[b, "verdict"] == "WEAK"]
+            none_ = [BUCKET_LABELS[b] for b in BUCKETS
+                     if b in vb.index and vb.loc[b, "verdict"] == "NONE"]
+            if none_:
+                st.info(
+                    f"**{' and '.join(none_)} are not shown.** Player impact is "
+                    f"measurably identifiable for {' and '.join(strong) or 'no other bucket'}, "
+                    f"but not for {' or '.join(none_)}: those estimates show no correlation "
+                    f"with a player's overall rating, i.e. no evidence of a repeatable "
+                    f"individual effect. Three-point outcomes being largely "
+                    f"non-repeatable at lineup level is a known result, and this model "
+                    f"reproduces it. The axes remain on the chart so the asymmetry is "
+                    f"visible rather than hidden.")
+            if weak_b:
+                st.info(
+                    f"**{' and '.join(weak_b)}** shows weak evidence of a real effect — "
+                    f"close to, but on the identifiable side of, the threshold used for "
+                    f"{' or '.join(none_) if none_ else 'the suppressed bucket(s)'}. "
+                    f"The estimate is shown, marked with \u2021, but should be read as a "
+                    f"tentative signal rather than a confident ranking.")
 
     with st.expander("Method and how to read this", expanded=False):
         lm = (df.groupby("bucket", observed=True)["league_mean"].first()

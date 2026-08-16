@@ -1,0 +1,34 @@
+# At The Buzzer — Streamlit configuration
+#
+# LOCATION: .streamlit/config.toml at the REPO ROOT (not inside app/).
+#           Must exist in the MIRROR repo — Community Cloud reads the mirror,
+#           so a copy that lives only in euroleague-rapm has no effect on the
+#           deployed dashboard.
+#
+# After pushing, reboot the app from the Community Cloud console. Config changes
+# are not reliably picked up by the file-watcher reload; they need a fresh process.
+
+[client]
+# Removes the Deploy button and the developer menu server-side, so they never
+# render at all. This is what stops the chrome flashing on load — CSS can only
+# hide them after the first paint. The running-man status widget is not covered
+# here and still needs the CSS rule in streamlit_app.py.
+toolbarMode = "minimal"
+
+# Tracebacks stay out of the public dashboard.
+showErrorDetails = false
+
+[theme]
+# Pinned rather than following the viewer's system setting. Two reasons: the
+# logo mark is navy and burnt orange, which needs a light ground to read; and a
+# Ch8 screenshot should not depend on the examiner's OS preference.
+base = "light"
+primaryColor = "#C2562B"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F4F5F7"
+textColor = "#16233A"
+font = "sans serif"
+
+[server]
+# Pre-computed parquet only, no uploads.
+maxUploadSize = 5
