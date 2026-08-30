@@ -38,7 +38,7 @@ Docker is **not** used. Reproducibility rests on the pinned dependencies and on 
 ## Running the dashboard locally
 
 ```bash
-streamlit run app/main.py
+streamlit run app/streamlit_app.py
 ```
 
 The app reads pre-computed Parquet only — it does no fitting at runtime. Append `?view=app` to the URL to skip the landing page.
